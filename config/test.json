@@ -1,0 +1,13 @@
+{
+  "App": {
+    "port": 4002,
+    "cors": {
+      "origin": "*"
+    },
+    "logger": {
+      "enabled": true,
+      "level": "info",
+      "enabled_log_reqs": true
+    }
+  }
+}
