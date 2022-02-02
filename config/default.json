@@ -7,7 +7,7 @@
     "logger": {
       "enabled": true,
       "level": "info",
-      "enabled_log_reqs": true
+      "enabled_log_reqs": false
     }
   }
 }

@@ -3,6 +3,7 @@ import logger from './logger';
 import cors from 'cors';
 import config from 'config';
 import expressPino from 'express-pino-logger';
+import shortenerRoute from './routes/shortener.route';
 
 class SetupServer {
   
@@ -25,7 +26,7 @@ class SetupServer {
   }
   
   private setupControllers(): void {
-
+    this.app.use('/shortener', shortenerRoute); //Autenticação
   }
 
   private setupErrorHandlers(): void {

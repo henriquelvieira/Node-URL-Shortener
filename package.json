@@ -2,7 +2,7 @@
   "name": "Node-URL-Shortener",
   "version": "1.0.0",
   "description": "URL Shortener criado em Node.js e Typescript",
-  "main": "index.js",
+  "main": "./dist/app.js",
   "author": "Henrique Lopes Vieira",
   "license": "MIT",
   "scripts": {
