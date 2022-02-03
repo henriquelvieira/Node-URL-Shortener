@@ -5,6 +5,7 @@ import config from 'config';
 import expressPino from 'express-pino-logger';
 import shortenerRoute from './routes/shortener.route';
 import MongoConnection from './database/MongoConnection';
+import errorHandlerMiddleware from './middlewares/error-handler.middleware';
 
 class SetupServer {
   
@@ -16,8 +17,8 @@ class SetupServer {
   
   private setupExpress(): void {
     
-    // const db = new MongoConnection();
-    // db.connect();
+    const db = new MongoConnection();
+    db.connect();
 
 
     this.app.use(express.json()); //Middleware p/ lidar c/ o JSON no Content-Type
@@ -36,6 +37,7 @@ class SetupServer {
   }
 
   private setupErrorHandlers(): void {
+    this.app.use(errorHandlerMiddleware)
 
   }
 
