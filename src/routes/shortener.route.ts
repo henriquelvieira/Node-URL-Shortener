@@ -4,7 +4,7 @@ import ShortenerController from "../controllers/shortener.controller";
 const shortenerRoute = Router();
 const shortenerController = new ShortenerController();
 
-shortenerRoute.get('/', shortenerController.list);
 shortenerRoute.post('/', shortenerController.create);
+shortenerRoute.get('/:shortURL', shortenerController.redirect);
 
 export default shortenerRoute;

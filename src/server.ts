@@ -4,6 +4,7 @@ import cors from 'cors';
 import config from 'config';
 import expressPino from 'express-pino-logger';
 import shortenerRoute from './routes/shortener.route';
+import MongoConnection from './database/MongoConnection';
 
 class SetupServer {
   
@@ -14,6 +15,12 @@ class SetupServer {
   }
   
   private setupExpress(): void {
+    
+    
+    const db = new MongoConnection();
+    db.connect();
+
+
     this.app.use(express.json()); //Middleware p/ lidar c/ o JSON no Content-Type
     this.app.use(express.urlencoded({ extended: true })); //Middleware p/ realizar o parsing do conteúdo das requisições
     
@@ -26,7 +33,7 @@ class SetupServer {
   }
   
   private setupControllers(): void {
-    this.app.use('/shortener', shortenerRoute); //Autenticação
+    this.app.use('/', shortenerRoute); //Autenticação
   }
 
   private setupErrorHandlers(): void {

@@ -1,5 +1,6 @@
 {
   "App": {
+    "url_api": "http://localhost:",
     "port": 4001,
     "cors": {
       "origin": "*"
@@ -8,6 +9,11 @@
       "enabled": true,
       "level": "info",
       "enabled_log_reqs": false
+    },
+    "envs": {
+      "MONGODB": {
+        "connectionString": "MONGODB_CONNECTIONSTRING"
+      }
     }
   }
 }

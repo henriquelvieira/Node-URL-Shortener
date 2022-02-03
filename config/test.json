@@ -1,5 +1,6 @@
 {
   "App": {
+    "url_api": "http://localhost:",
     "port": 4002,
     "cors": {
       "origin": "*"
