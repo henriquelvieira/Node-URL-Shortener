@@ -16,8 +16,8 @@ class MongoConnection {
 		try {		
 			const connection = this.getConnection();
 			
-			await mongoose.connect(connection, { useNewUrlParser: true, useUnifiedTopology: true })
-			
+			// await mongoose.connect(connection, { useNewUrlParser: true, useUnifiedTopology: true })
+			await mongoose.connect(connection);
 			logger.info('Database connected');
 		} catch (error) {
 			logger.error(`Database not connected - ${error}`);

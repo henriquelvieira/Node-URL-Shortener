@@ -16,9 +16,8 @@ class SetupServer {
   
   private setupExpress(): void {
     
-    
-    const db = new MongoConnection();
-    db.connect();
+    // const db = new MongoConnection();
+    // db.connect();
 
 
     this.app.use(express.json()); //Middleware p/ lidar c/ o JSON no Content-Type
