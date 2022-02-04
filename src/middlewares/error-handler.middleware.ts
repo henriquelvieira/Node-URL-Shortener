@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import {StatusCodes} from 'http-status-codes';
 import logger from '../logger';
+import BadRequestError from '../models/errors/badRequest.error.model';
 import DatabaseError from '../models/errors/database.error.model';
 import ForbiddenError from '../models/errors/forbidden.error.model';
 
@@ -13,6 +14,8 @@ function errorHandlerMiddleware(error: any, req: Request, res: Response, next : 
         errorCode = StatusCodes.BAD_REQUEST;
     } else if (error instanceof ForbiddenError) {
         errorCode = StatusCodes.FORBIDDEN;
+    } else if (error instanceof BadRequestError){
+        errorCode = StatusCodes.BAD_REQUEST;
     } else {
         logger.error(error);
     }
