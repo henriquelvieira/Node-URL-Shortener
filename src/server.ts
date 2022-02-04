@@ -17,9 +17,8 @@ class SetupServer {
   
   private setupExpress(): void {
     
-    const db = new MongoConnection();
-    db.connect();
-
+    // const db = new MongoConnection();
+    // db.connect();
 
     this.app.use(express.json()); //Middleware p/ lidar c/ o JSON no Content-Type
     this.app.use(express.urlencoded({ extended: true })); //Middleware p/ realizar o parsing do conteúdo das requisições
@@ -33,12 +32,11 @@ class SetupServer {
   }
   
   private setupControllers(): void {
-    this.app.use('/', shortenerRoute); //Autenticação
+    this.app.use('/', shortenerRoute); 
   }
 
   private setupErrorHandlers(): void {
     this.app.use(errorHandlerMiddleware)
-
   }
 
   public async init(): Promise<void> {

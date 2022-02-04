@@ -1,5 +1,5 @@
 import { Router } from "express";
-import ShortenerController from "../controllers/shortener.controller";
+import { ShortenerController } from "../controllers/shortener.controller";
 
 const shortenerRoute = Router();
 const shortenerController = new ShortenerController();

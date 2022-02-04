@@ -2,24 +2,23 @@ import { Request, Response, NextFunction } from "express";
 import config from "config";
 import {StatusCodes} from 'http-status-codes';
 import shortid from "shortid";
+import { Url } from "../@types/url.type";
 
+export function generateShortid() {
+    const urlID = shortid.generate() as string;
+    return urlID;
+};
 
-export type Url = {
-    url_original: string,
-    url_shortened?: string
-}
+export class ShortenerController {
 
-
-class ShortenerController {
-    
     public async create (req: Request, res: Response, next: NextFunction) {
         //Pegar o conteudo da requisição
         const url: Url = req.body;
 
         //Verificar se a URL já está na base
         
-        //Encurtar a URL
-        const urlID = shortid.generate() as string;
+        //Encurtar a URL       
+        const urlID = generateShortid();
 
         //Montagem da URL do Server
         const urlServer = config.get('App.url_api') as string + config.get('App.port') as string;
@@ -40,19 +39,14 @@ class ShortenerController {
         const shortURL = req.params.shortURL;
 
         //Descobrir a URL no banco
-        const urlOriginal = "http://www.dba-oracle.com/t_calling_oracle_function.htm"
+        const urlOriginal = "http://www.dba-oracle.com/t_calling_oracle_function.htm";
 
 
         const response: Url = {url_original: urlOriginal,
-                               url_shortened: shortURL
-                              };                             
+                               url_shortened: shortURL};                             
 
         //redirecionar 
         return res.status(StatusCodes.OK).send(response); 
         // return res.redirect(response.url_original)
     }
-
-
-}
-
-export default ShortenerController;
+};

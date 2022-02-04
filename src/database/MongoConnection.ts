@@ -7,14 +7,14 @@ dotenv.config();
 
 class MongoConnection {
 	
-	private getConnection(): string {
+	private getStringConnection(): string {
 		const connection = process.env[config.get('App.envs.MONGODB.connectionString') as string] as string;
 		return connection;
 	}
 	
 	public async connect(): Promise<void> {
 		try {		
-			const connection = this.getConnection();
+			const connection = this.getStringConnection();
 			
 			// await mongoose.connect(connection, { useNewUrlParser: true, useUnifiedTopology: true })
 			await mongoose.connect(connection);
