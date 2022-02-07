@@ -1,43 +1,29 @@
-// import MongoConnection from "../database/MongoConnection";
+import mongoose, { Document, Model, Schema } from 'mongoose';
 
+export interface IUrl  {
+    _id?: string;
+    original: string;
+    shortened?: string;
+    url_shortened?: string;
+}
 
-// const mongoose = new MongoConnection();
+const UrlSchema = new mongoose.Schema (
+    {
+      url_original: { type: String, required: true },
+      shortened: { type: String, required: true },
+      createdAt: { type: Date, default: Date.now, required: true}
+    },
+    {
+      toJSON: {
+        transform: (_, ret): void => {
+          ret.id = ret._id;
+          delete ret._id;
+          delete ret.__v;
+        },
+      },
+    }
+);
 
-// const UserSchema = new mongoose.Schema({
-//     user: {
-//         type: mongoose.Schema.Types.ObjectId,
-//         ref: 'User',  
-//         required: true,
-//     },
-//     name: {
-//         type: String,
-//         required: [true, 'Nome é obrigatório!'],
-//     },
-//     description: {
-//         type: String,
-//         required: [true, 'Descrição é obrigatório!'],
-//     },
+interface UrlModel extends Omit<IUrl, '_id'>, Document {}
 
-//     icon: {
-//         type: String
-//     },
-
-//     color: {
-//         type: String
-//     },
-
-//     type: {
-//         type: String,
-//         required: [true, 'Tipo é obrigatório!'],
-//     },
-//     createdAt: {
-//         type: Date,
-//         default: Date.now,
-//     },
-// });
-
-
-
-// const Project = mongoose.model('Projects', UserSchema);
-
-// module.exports = Project;
+export const Url: Model<UrlModel> = mongoose.model('URL', UrlSchema);

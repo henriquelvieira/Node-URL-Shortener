@@ -17,7 +17,7 @@ describe("(/) - Shortener Route's", () => {
     it("(POST /) - Should be able shorter a URL", async () => {
         
         const requestBody = {
-            "url_original": "http://www.dba-oracle.com/t_calling_oracle_function.htm"
+            "original": "http://www.dba-oracle.com/t_calling_oracle_function.htm"
         };
         
         const response = await request(app)
@@ -25,17 +25,17 @@ describe("(/) - Shortener Route's", () => {
         .set('Content-Type', 'application/json') 
         .send(requestBody);
 
-        url_shortened = response.body.id as string;
+        url_shortened = response.body.shortened as string;
 
         expect(response.status).toBe(200);
         expect(url_shortened.length).toBeGreaterThan(0);  
+        expect(response.body).toHaveProperty("original");  
+        expect(response.body).toHaveProperty("shortened");  
         expect(response.body).toHaveProperty("url_shortened");    
-        expect(response.body).toHaveProperty("url_original");  
-        expect(response.body).toHaveProperty("id");  
     });
 
     it("(GET /) - Should be able shorter a URL", async () => {
-                
+        
         const response = await request(app)
         .get(`/${url_shortened}`)
         .set('Content-Type', 'application/json') 
@@ -44,8 +44,8 @@ describe("(/) - Shortener Route's", () => {
         expect(response.status).toBe(200);
         expect(url_shortened.length).toBeGreaterThan(0);  
         expect(response.body).toHaveProperty("url_shortened");    
-        expect(response.body).toHaveProperty("id");  
-        expect(response.body).toHaveProperty("url_original");  
+        expect(response.body).toHaveProperty("shortened");  
+        expect(response.body).toHaveProperty("original");  
     });
 
 
