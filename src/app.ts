@@ -13,6 +13,5 @@ import logger from './logger';
   } catch (error) {
     logger.error(`Falha ao iniciar o servidor ${error}`);
   }
-
 }
 )()

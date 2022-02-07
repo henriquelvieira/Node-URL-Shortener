@@ -1,28 +1,30 @@
-import mongoose from 'mongoose';
-import config from 'config';
+import { connect as mongooseConnect, connection } from 'mongoose';
+import config, { IConfig } from 'config';
 import * as dotenv from "dotenv";
 import logger from '../logger';
 dotenv.config();
 
-
 class MongoConnection {
 	
 	private getStringConnection(): string {
-		const connection = process.env[config.get('App.envs.MONGODB.connectionString') as string] as string;
-		return connection;
+		const connectionString = process.env[config.get('App.envs.MONGODB.connectionString') as string] as string;
+		return connectionString;
 	}
 	
 	public async connect(): Promise<void> {
 		try {		
-			const connection = this.getStringConnection();
+			const connectionString = this.getStringConnection();
 			
 			// await mongoose.connect(connection, { useNewUrlParser: true, useUnifiedTopology: true })
-			await mongoose.connect(connection);
+			await mongooseConnect(connectionString);
 			logger.info('Database connected');
 		} catch (error) {
 			logger.error(`Database not connected - ${error}`);
-			process.exit(1)
 		}
+	}
+
+	public async close(): Promise<void> {
+		connection.close();
 	}
 }
 
