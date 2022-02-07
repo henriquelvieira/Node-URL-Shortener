@@ -10,6 +10,7 @@ import errorHandlerMiddleware from './middlewares/error-handler.middleware';
 class SetupServer {
   
   app: express.Express;
+  db = new MongoConnection();
   
   constructor(private port = 3333) {
     this.app = express();
@@ -37,8 +38,7 @@ class SetupServer {
   }
 
   private async setupDatabase(): Promise<void> {
-    // const db = new MongoConnection();
-    // db.connect();
+    // this.db.connect();
   }
   
   public async init(): Promise<void> {
@@ -58,6 +58,10 @@ class SetupServer {
     this.app.listen(this.port, () => {
       logger.info(`Server is running on port  ${this.port}`);
     });
+  }
+
+  public close(): void {
+    this.db.close();
   }
 
   public getApp(): express.Express {

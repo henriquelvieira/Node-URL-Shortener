@@ -7,7 +7,9 @@ dotenv.config();
 class MongoConnection {
 	
 	private getStringConnection(): string {
-		const connectionString = process.env[config.get('App.envs.MONGODB.connectionString') as string] as string;
+		const configs: IConfig = config.get('App.envs');
+
+		const connectionString = process.env[configs.get('MONGODB.connectionString') as string] as string;
 		return connectionString;
 	}
 	
