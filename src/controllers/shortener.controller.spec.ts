@@ -1,4 +1,5 @@
-import { generateShortid } from "../controllers/shortener.controller";
+import { formatURL, generateShortid } from "../controllers/shortener.controller";
+import BadRequestError from "../models/errors/badRequest.error.model";
 import { IUrl } from "../models/url.model";
 describe("ShortenerController", () => {
 
@@ -6,15 +7,21 @@ describe("ShortenerController", () => {
         const url: IUrl = {original: "www.google.com"};
 
         const urlID = generateShortid();
+
+        const urlShortened = formatURL(urlID);    
+        
         const response = {original: url.original,
-                          url_shortened: urlID
+                          shortened: urlID,
+                          url_shortened: urlShortened
                          };
+                       
 
         expect(url).toHaveProperty('original');
         expect(urlID.length).toBeGreaterThan(0);
 
         expect(response).toHaveProperty('original');
-        expect(response).toHaveProperty('url_shortened');        
+        expect(response).toHaveProperty('shortened');        
+        expect(response).toHaveProperty('url_shortened');
     });
 
     it("(redirect) - Should be able redirect to original URL", async () => {
@@ -27,8 +34,8 @@ describe("ShortenerController", () => {
                                
         expect(response).toHaveProperty('original'); 
         expect(response).toHaveProperty('url_shortened');                               
-
     });
+
 
 }
 );

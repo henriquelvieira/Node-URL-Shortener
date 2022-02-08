@@ -1,11 +1,13 @@
 import mongoose, { Document, Model } from 'mongoose';
 
-export interface IUrl  {
+export interface IUrl {
     _id?: string;
     original: string;
     shortened?: string;
     url_shortened?: string;
+    createdAt?: Date;
 }
+
 
 const UrlSchema = new mongoose.Schema (
     {

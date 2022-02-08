@@ -5,6 +5,9 @@
     "cors": {
       "origin": "*"
     },
+    "database": {
+      "connect": false
+    },
     "logger": {
       "enabled": true,
       "level": "info",
