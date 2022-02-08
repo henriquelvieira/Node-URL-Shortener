@@ -1,4 +1,4 @@
-import config, { IConfig } from 'config';
+import config from 'config';
 import SetupServer from './server';
 import logger from './logger';
 
