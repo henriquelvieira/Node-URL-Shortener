@@ -33,50 +33,45 @@ export class ShortenerController {
             }            
 
             //Verificar se a URL já está na base
-            // const urlResponseDB = await Url.findOne({ original: urlReq.original });
-            const urlResponseDB = {}; //TO DO: Remover apos ajustar conexão com o banco
+            const urlResponseDB = await Url.findOne({ original: urlReq.original });
+            // const urlResponseDB = {}; //TO DO: Remover apos ajustar conexão com o banco
+            
             let urlID: string; 
             let newRegister: boolean = false;
 
             if (urlResponseDB) {
-                //Buscar a Short URL que já está no banco
-                // const urlID = urlResponseDB.shortened;   
-
-                urlID = generateShortid(); //TO DO: Remover apos ajustar conexão com o banco
+                urlID = urlResponseDB.shortened as string; //Recuperar a Short URL que está no banco  
+                // urlID = generateShortid(); //TO DO: Remover apos ajustar conexão com o banco
             } else {                
                 newRegister = true;
-                
-                //Encurtar a URL       
-                urlID = generateShortid();
+                urlID = generateShortid(); //Gerar o ID para a Short URL 
             };
 
-    
             //Montagem da URL do Server
             const urlServer = configs.get('url_api') as string + configs.get('port') as string;
             const urlShortened = `${urlServer}/${urlID}`;
     
+            //Montagem do objeto que será salva no banco
             const newRecord: IUrl = {
                 original: urlReq.original,
                 shortened: urlID,
             };
             
             //Gravar a URL na base
-            // if (newRegister) {
-            //     try {
-            //         const newUrl = new Url(newRecord);
-            //         const resultDB = await newUrl.save();                
-            //     } catch (error) {
-            //         throw new DatabaseError('Falha ao gravar a URL no banco!');                
-            //     }
-            // }
+            if (newRegister) {
+                try {
+                    const newUrl = new Url(newRecord);
+                    const resultDB = await newUrl.save();                
+                } catch (error) {
+                    throw new DatabaseError('Falha ao gravar a URL no banco!');                
+                }
+            }
     
             //Retornar
             const response: IUrl = {...newRecord,
                                     url_shortened: urlShortened};
     
             return res.status(StatusCodes.OK).send(response); //Responder a requisição c/ o Status 200
-            
-            
         } catch (error) {
             next(error);            
         }
@@ -86,18 +81,25 @@ export class ShortenerController {
 
         try {
             const shortURL = req.params.shortURL;
+            let urlOriginal: string;
     
-            //Descobrir a URL completa no banco
-            const urlOriginal = "http://www.dba-oracle.com/t_calling_oracle_function.htm";
-    
+            //Verificar se a URL já está na base
+            const urlResponseDB = await Url.findOne({ shortened: shortURL });
+            // urlOriginal = "http://www.dba-oracle.com/t_calling_oracle_function.htm"; //Descomentar para testes
+
+            if (urlResponseDB) {
+                urlOriginal = urlResponseDB.original;
+            } else {
+                throw new BadRequestError('URL não encontrada na base de dados!');
+            }
     
             const response: IUrl = {original: urlOriginal,
                                     shortened: shortURL,
                                     url_shortened: shortURL};                             
     
             //redirecionar 
-            return res.status(StatusCodes.OK).send(response); 
-            // return res.redirect(response.url_original)
+            // return res.status(StatusCodes.OK).send(response); //Descomentar para teste
+            return res.redirect(response.original); //Redirecionar para a URL original
         } catch (error) {
             next(error);            
         }

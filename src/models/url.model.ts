@@ -9,7 +9,7 @@ export interface IUrl  {
 
 const UrlSchema = new mongoose.Schema (
     {
-      url_original: { type: String, required: true },
+      original: { type: String, required: true },
       shortened: { type: String, required: true },
       createdAt: { type: Date, default: Date.now, required: true}
     },

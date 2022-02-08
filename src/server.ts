@@ -40,7 +40,7 @@ class SetupServer {
   }
 
   private async setupDatabase(): Promise<void> {
-    // this.db.connect();
+    this.db.connect();
   }
   
   public async init(): Promise<void> {
