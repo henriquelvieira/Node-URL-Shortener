@@ -15,7 +15,7 @@ export function generateShortid() {
         logger.error(`Falha ao gerar o Shortid da URL ${error}`);      
         throw new BadRequestError('Falha ao gerar a Shortid');  
     }    
-};
+}
 
 export class ShortenerController {
 
@@ -31,7 +31,7 @@ export class ShortenerController {
             logger.error(`Falha ao formatar a URL ${error}`);      
             throw new BadRequestError('Falha ao gerar a Shortid');  
         }
-    };
+    }
 
     public async create (req: Request, res: Response, next: NextFunction) {
         
@@ -53,16 +53,16 @@ export class ShortenerController {
             // const urlResponseDB = {}; //TO DO: Remover apos ajustar conexão com o banco
             
             let urlID: string; 
-            let newRegister: boolean = false;
+            let newRegister = false;
             
             //Gerar novo Shortid ou retornar do banco caso já exista
             if (urlResponseDB) {
                 urlID = urlResponseDB.shortened as string; //Recuperar a Short URL que está no banco  
                 // urlID = generateShortid(); //TO DO: Remover apos ajustar conexão com o banco
             } else {                
-                newRegister = true;
                 urlID = generateShortid(); //Gerar o ID para a Short URL 
-            };
+                newRegister = true;
+            }
             
             //Montagem do objeto que será salva no banco
             const newRecord: IUrl = {
@@ -78,7 +78,7 @@ export class ShortenerController {
                 } catch (error) {
                     throw new DatabaseError('Falha ao gravar a URL no banco!');                
                 }
-            };
+            }
             
             //Montagem da URL do Server            
             const urlShortened = this.formatURL(urlID);
@@ -102,7 +102,7 @@ export class ShortenerController {
             
             if (!shortURL) {
                 throw new BadRequestError('Short URL não informada na requisição');
-            };
+            }
             
             let urlOriginal: string;
     
@@ -122,9 +122,9 @@ export class ShortenerController {
     
             //redirecionar 
             // return res.status(StatusCodes.OK).send(response); //Descomentar para teste
-            return res.redirect(response.original); //Redirecionar para a URL original
+            return res.redirect(response.original) //Redirecionar para a URL original
         } catch (error) {
             next(error);            
         }
     }
-};
+}

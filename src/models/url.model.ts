@@ -1,4 +1,4 @@
-import mongoose, { Document, Model, Schema } from 'mongoose';
+import mongoose, { Document, Model } from 'mongoose';
 
 export interface IUrl  {
     _id?: string;
