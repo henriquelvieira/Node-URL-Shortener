@@ -1,28 +1,55 @@
-// import DatabaseError from "../models/errors/database.error.model";
-// import { IUrl, Url } from "../models/url.model";
+import { generateShortid } from "../controllers/shortener.controller";
+import DatabaseError from "../models/errors/database.error.model";
+import { IUrl, Url } from "../models/url.model";
 
-// class UrlRepository {
+export interface IQueryParams {
+    fields: string;
+    value: string;
+}
 
-//     public async findUrl (urlData: IUrl): Promise<IUrl> {
+class UrlRepository {
 
-//         try {
-//             const urlResponseDB = await Url.findOne({ original: urlData.original });
-//             // const urlResponseDB: IUrl= {
-//             //     original: urlReq.original,
-//             //     shortened: generateShortid()
-//             // }; //TO DO: Remover apos ajustar conexão com o banco (MOCK)
+    public async findUrlShortened (urlData: IUrl): Promise<IUrl> {
+
+        try {
+            // const rows = await Url.findOne({ original: urlData.original });
+            const rows: IUrl= {
+                original: urlData.original,
+                shortened: generateShortid()
+            }; //TO DO: Remover apos ajustar conexão com o banco (MOCK)
             
-//             return urlResponseDB; 
+            return rows || {original: urlData.original }; 
 
-//             // if (urlResponseDB) {
-//             //     return urlResponseDB; 
-//             // }
-    
-//         } catch (error) {
-//             throw new DatabaseError ('Erro ao consultar a URL');               
-//         }                
-//     }
+        } catch (error) {
+            throw new DatabaseError ('Erro ao consultar a URL', error);               
+        }                
+    }
 
-// }
+    public async findUrlOriginal (shortURL: string): Promise<IUrl> {
 
-// export default UrlRepository;
+        try {
+            // const rows = await Url.findOne({ shortened: shortURL });
+            const rows : IUrl= {
+                original: "http://www.dba-oracle.com/t_calling_oracle_function.htm",
+                shortened: shortURL
+            }; //TO DO: Remover apos ajustar conexão com o banco (MOCK)
+            
+            return rows || {original: '' }; 
+
+        } catch (error) {
+            throw new DatabaseError ('Erro ao consultar a URL', error);               
+        }                
+    }    
+
+    public async create (urlData: IUrl): Promise<void> {
+        try {
+            const newUrl = new Url(urlData);
+            await newUrl.save();   
+        } catch (error) {
+            throw new DatabaseError ('Erro ao gravar a URL no banco', error);               
+        }   
+    }    
+
+}
+
+export default UrlRepository;

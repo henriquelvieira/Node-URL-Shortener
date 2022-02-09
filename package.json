@@ -1,10 +1,24 @@
 {
   "name": "Node-URL-Shortener",
   "version": "1.0.0",
-  "description": "URL Shortener criado em Node.js e Typescript",
   "main": "./dist/app.js",
+  "description": "URL Shortener criado em Node.js e Typescript",
   "author": "Henrique Lopes Vieira",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/henriquelvieira/Node-URL-Shortener.git"
+  },
+  "homepage": "https://github.com/henriquelvieira/Node-URL-Shortener#readme",
+  "keywords": [
+    "node",
+    "nodejs",
+    "typescript",
+    "api"
+  ],
+  "engines": {
+    "node": "16"
+  },
   "scripts": {
     "start": "node ./",
     "test": "jest",
@@ -13,7 +27,7 @@
     "test:start": "yarn test && yarn start",
     "start:local": "ts-node-dev --respawn --transpile-only --ignore-watch node_modules src/app.ts | pino-pretty -c",
     "build": "tsc -p .",
-    "deploy": "yarn build && yarn start",
+    "deploy": "yarn lint && yarn test && yarn build && yarn start",
     "lint": "eslint ./src --ext .ts",
     "lint:fix": "eslint ./src --ext .ts --fix",
     "style:check": "prettier --check src/**/*.ts",

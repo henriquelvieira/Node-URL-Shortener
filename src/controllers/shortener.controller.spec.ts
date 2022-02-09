@@ -12,8 +12,7 @@ describe("ShortenerController", () => {
         const response = {original: url.original,
                           shortened: urlID,
                           urlShortened: urlShortened
-                         };
-                       
+                         };                   
 
         expect(url).toHaveProperty('original');
         expect(urlID.length).toBeGreaterThan(0);

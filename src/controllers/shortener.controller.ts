@@ -6,7 +6,7 @@ import BadRequestError from "../models/errors/badRequest.error.model";
 import { IUrl, Url } from "../models/url.model";
 import DatabaseError from "../models/errors/database.error.model";
 import logger from "../logger";
-// import UrlRepository from "../repositories/url.repositorie";
+import UrlRepository from "../repositories/url.repositorie";
 
 export function generateShortid() {
     try {
@@ -54,20 +54,14 @@ export class ShortenerController {
             }            
 
             //Verificar se a URL já está na base
-            // const respository = new UrlRepository;
-            // const urlResponseDB: IUrl = await respository.findUrl(urlReq);
-
-            // const urlResponseDB = await Url.findOne({ original: urlReq.original }); //TO DO: DESCOMENTAR
-            const urlResponseDB: IUrl= {
-                original: urlReq.original,
-                shortened: generateShortid()
-            }; //TO DO: Remover apos ajustar conexão com o banco (MOCK)
+            const respository = new UrlRepository;
+            const urlResponseDB: IUrl = await respository.findUrlShortened(urlReq);
             
             let urlID: string; 
             let newRegister = false;
             
             //Gerar novo Shortid ou retornar do banco caso já exista
-            if (urlResponseDB) {
+            if (urlResponseDB.shortened) {
                 urlID = urlResponseDB.shortened as string; //Recuperar a Short URL que está no banco  
             } else {                
                 urlID = generateShortid(); //Gerar o ID para a Short URL 
@@ -75,19 +69,15 @@ export class ShortenerController {
             }
             
             //Montagem do objeto que será salva no banco
-            const newRecord: IUrl = {
+            const newRecordData: IUrl = {
                 original: urlReq.original,
                 shortened: urlID,
             };
             
             //Gravar a URL na base
             if (newRegister) {
-                try {
-                    const newUrl = new Url(newRecord);
-                    await newUrl.save();                
-                } catch (error) {
-                    throw new DatabaseError('Falha ao gravar a URL no banco!');                
-                }
+                const respository = new UrlRepository;
+                await respository.create(newRecordData);   
             }
             
             //Montagem da URL do Server            
@@ -95,7 +85,7 @@ export class ShortenerController {
 
             //Montagem do objeto que será retornado na requisição
             const response: IUrl = {
-                ...newRecord,
+                ...newRecordData,
                 urlShortened: urlShortened
             };
     
@@ -114,12 +104,10 @@ export class ShortenerController {
                 throw new BadRequestError('Short URL não informada na requisição');
             }
                 
-            //Verificar se a URL já está na base
-            // const urlResponseDB = await Url.findOne({ shortened: shortURL }); //TO DO: DESCOMENTAR
-            const urlResponseDB: IUrl= {
-                original: "http://www.dba-oracle.com/t_calling_oracle_function.htm"
-            }; //TO DO: Remover apos ajustar conexão com o banco (MOCK)
-
+            //Busca a URL original no banco de dados
+            const respository = new UrlRepository;
+            const urlResponseDB: IUrl = await respository.findUrlOriginal(shortURL);     
+            
             if (!urlResponseDB) {
                 throw new BadRequestError('URL não encontrada na base de dados!');  //TO DO: DESCOMENTAR
             }
