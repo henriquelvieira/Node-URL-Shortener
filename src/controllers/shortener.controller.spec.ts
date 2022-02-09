@@ -1,5 +1,4 @@
 import { formatURL, generateShortid } from "../controllers/shortener.controller";
-import BadRequestError from "../models/errors/badRequest.error.model";
 import { IUrl } from "../models/url.model";
 describe("ShortenerController", () => {
 
@@ -12,7 +11,7 @@ describe("ShortenerController", () => {
         
         const response = {original: url.original,
                           shortened: urlID,
-                          url_shortened: urlShortened
+                          urlShortened: urlShortened
                          };
                        
 
@@ -21,7 +20,7 @@ describe("ShortenerController", () => {
 
         expect(response).toHaveProperty('original');
         expect(response).toHaveProperty('shortened');        
-        expect(response).toHaveProperty('url_shortened');
+        expect(response).toHaveProperty('urlShortened');
     });
 
     it("(redirect) - Should be able redirect to original URL", async () => {
@@ -30,10 +29,10 @@ describe("ShortenerController", () => {
         const urlOriginal = "http://www.dba-oracle.com/t_calling_oracle_function.htm";
 
         const response: IUrl = {original: urlOriginal,
-                                url_shortened: shortURL};                                
+            urlShortened: shortURL};                                
                                
         expect(response).toHaveProperty('original'); 
-        expect(response).toHaveProperty('url_shortened');                               
+        expect(response).toHaveProperty('urlShortened');                               
     });
 
 

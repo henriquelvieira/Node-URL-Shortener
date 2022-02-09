@@ -4,10 +4,9 @@ export interface IUrl {
     _id?: string;
     original: string;
     shortened?: string;
-    url_shortened?: string;
+    urlShortened?: string;
     createdAt?: Date;
 }
-
 
 const UrlSchema = new mongoose.Schema (
     {

@@ -6,6 +6,7 @@ import BadRequestError from "../models/errors/badRequest.error.model";
 import { IUrl, Url } from "../models/url.model";
 import DatabaseError from "../models/errors/database.error.model";
 import logger from "../logger";
+// import UrlRepository from "../repositories/url.repositorie";
 
 export function generateShortid() {
     try {
@@ -22,8 +23,7 @@ export function formatURL (urlID: string): string {
         throw new BadRequestError('Falha ao formatar a URL de retorno');  
     }
 
-    try {
-    
+    try {    
         const configs: IConfig = config.get('App');
 
         const urlServer = configs.get('url_api') as string + configs.get('port') as string;
@@ -54,11 +54,14 @@ export class ShortenerController {
             }            
 
             //Verificar se a URL já está na base
-            const urlResponseDB = await Url.findOne({ original: urlReq.original }); //TO DO: DESCOMENTAR
-            // const urlResponseDB: IUrl= {
-            //     original: urlReq.original,
-            //     shortened: generateShortid()
-            // }; //TO DO: Remover apos ajustar conexão com o banco (MOCK)
+            // const respository = new UrlRepository;
+            // const urlResponseDB: IUrl = await respository.findUrl(urlReq);
+
+            // const urlResponseDB = await Url.findOne({ original: urlReq.original }); //TO DO: DESCOMENTAR
+            const urlResponseDB: IUrl= {
+                original: urlReq.original,
+                shortened: generateShortid()
+            }; //TO DO: Remover apos ajustar conexão com o banco (MOCK)
             
             let urlID: string; 
             let newRegister = false;
@@ -93,7 +96,7 @@ export class ShortenerController {
             //Montagem do objeto que será retornado na requisição
             const response: IUrl = {
                 ...newRecord,
-                url_shortened: urlShortened
+                urlShortened: urlShortened
             };
     
             return res.status(StatusCodes.OK).send(response); //Responder a requisição c/ o Status 200
@@ -110,18 +113,14 @@ export class ShortenerController {
             if (!shortURL) {
                 throw new BadRequestError('Short URL não informada na requisição');
             }
-            
-            let urlOriginal: string;
-    
+                
             //Verificar se a URL já está na base
             // const urlResponseDB = await Url.findOne({ shortened: shortURL }); //TO DO: DESCOMENTAR
             const urlResponseDB: IUrl= {
                 original: "http://www.dba-oracle.com/t_calling_oracle_function.htm"
             }; //TO DO: Remover apos ajustar conexão com o banco (MOCK)
 
-            if (urlResponseDB) {
-                urlOriginal = urlResponseDB.original; //TO DO: DESCOMENTAR
-            } else {
+            if (!urlResponseDB) {
                 throw new BadRequestError('URL não encontrada na base de dados!');  //TO DO: DESCOMENTAR
             }
     

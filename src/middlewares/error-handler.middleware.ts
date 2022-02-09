@@ -5,7 +5,8 @@ import BadRequestError from '../models/errors/badRequest.error.model';
 import DatabaseError from '../models/errors/database.error.model';
 import ForbiddenError from '../models/errors/forbidden.error.model';
 
-function errorHandlerMiddleware(error: any, req: Request, res: Response, next : NextFunction) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function errorHandlerMiddleware(error: any, req: Request, res: Response, _next : NextFunction) {
     
     const errorMessage: string = error.message || 'unexpected-error';
     let errorCode = StatusCodes.INTERNAL_SERVER_ERROR;

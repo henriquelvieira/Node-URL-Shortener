@@ -1,3 +1,4 @@
+import express from 'express';
 import request from 'supertest';
 import SetupServer from '../../src/server';
 import config from 'config';
@@ -5,8 +6,8 @@ import config from 'config';
 //Testes Funcionais (E2E)
 describe("(/) - Shortener Route's", () => {
     
-    let app: any;
-    let url_shortened: string;
+    let app: express.Express;
+    let urlShortened: string;
 
     beforeAll(async () => {
         const server = new SetupServer(config.get('App.port'));
@@ -25,16 +26,16 @@ describe("(/) - Shortener Route's", () => {
         .set('Content-Type', 'application/json') 
         .send(requestBody);
 
-        url_shortened = response.body.shortened as string;
+        urlShortened = response.body.shortened as string;
         
         expect(response.status).toBe(200);
-        expect(url_shortened.length).toBeGreaterThan(0);  
+        expect(urlShortened.length).toBeGreaterThan(0);  
         
         expect(response.body).toEqual(
             expect.objectContaining({
                 original: expect.stringContaining('http'),
                 shortened: expect.any(String),
-                url_shortened: expect.stringContaining('http')
+                urlShortened: expect.stringContaining('http')
              })
         );
 
@@ -43,12 +44,12 @@ describe("(/) - Shortener Route's", () => {
     it("(GET /) - Should be able shorter a URL", async () => {
         
         const response = await request(app)
-        .get(`/${url_shortened}`)
+        .get(`/${urlShortened}`)
         .set('Content-Type', 'application/json') 
         .send();
 
         expect(response.status).toBe(200);
-        expect(url_shortened.length).toBeGreaterThan(0);  
+        expect(urlShortened.length).toBeGreaterThan(0);  
 
         expect(response.body).toEqual(
             expect.objectContaining({
@@ -71,12 +72,12 @@ describe("(/) - Shortener Route's", () => {
         .set('Content-Type', 'application/json') 
         .send(requestBody);
 
-        url_shortened = response.body.shortened as string;
+        urlShortened = response.body.shortened as string;
         
         expect(response.status).toBe(400);
         expect(response.body).not.toHaveProperty('original');
         expect(response.body).not.toHaveProperty('shortened');
-        expect(response.body).not.toHaveProperty('url_shortened');
+        expect(response.body).not.toHaveProperty('urlShortened');
     });
 
     it("(GET /) - Should not be able shorter a URL", async () => {
