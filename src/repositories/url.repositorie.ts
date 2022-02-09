@@ -4,10 +4,14 @@ class UrlRepository {
 
     public async findUrl (urlData: IUrl): Promise<IUrl> {
         const urlResponseDB = await Url.findOne({ original: urlData.original });
+        let response: IUrl;
+        if (urlResponseDB) {
+            response =  urlResponseDB ;
+        } else {
+            response =  {original: ""} ;
+        }
 
-        const response: IUrl = {original: urlResponseDB.original } 
-
-        return urlResponseDB;
+        return response;
     }
 
 }

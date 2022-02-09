@@ -54,11 +54,11 @@ export class ShortenerController {
             }            
 
             //Verificar se a URL já está na base
-            // const urlResponseDB = await Url.findOne({ original: urlReq.original }); //TO DO: DESCOMENTAR
-            const urlResponseDB: IUrl= {
-                original: urlReq.original,
-                shortened: generateShortid()
-            }; //TO DO: Remover apos ajustar conexão com o banco (MOCK)
+            const urlResponseDB = await Url.findOne({ original: urlReq.original }); //TO DO: DESCOMENTAR
+            // const urlResponseDB: IUrl= {
+            //     original: urlReq.original,
+            //     shortened: generateShortid()
+            // }; //TO DO: Remover apos ajustar conexão com o banco (MOCK)
             
             let urlID: string; 
             let newRegister = false;
