@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
+
 import logger from '../logger';
 import BadRequestError from '../models/errors/badRequest.error.model';
 import DatabaseError from '../models/errors/database.error.model';

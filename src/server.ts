@@ -1,11 +1,12 @@
-import express, { Request, Response } from 'express';
-import logger from './logger';
-import cors from 'cors';
 import config, { IConfig } from 'config';
+import cors from 'cors';
+import express, { Request, Response } from 'express';
 import expressPino from 'express-pino-logger';
-import shortenerRoute from './routes/shortener.route';
+
 import MongoConnection from './database/MongoConnection';
+import logger from './logger';
 import errorHandlerMiddleware from './middlewares/error-handler.middleware';
+import shortenerRoute from './routes/shortener.route';
 
 class SetupServer {
   app: express.Express;

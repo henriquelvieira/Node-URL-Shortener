@@ -1,5 +1,5 @@
-import pino from 'pino';
 import config, { IConfig } from 'config';
+import pino from 'pino';
 
 const configs: IConfig = config.get('App.logger');
 

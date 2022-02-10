@@ -49,6 +49,8 @@
     "@typescript-eslint/parser": "^5.9.1",
     "eslint": "^8.6.0",
     "eslint-config-prettier": "^8.3.0",
+    "eslint-import-resolver-typescript": "^2.5.0",
+    "eslint-plugin-import-helpers": "^1.2.1",
     "eslint-plugin-prettier": "^4.0.0",
     "jest": "^27.4.7",
     "pino-pretty": "^7.5.1",

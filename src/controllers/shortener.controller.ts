@@ -1,11 +1,12 @@
-import { Request, Response, NextFunction } from 'express';
 import config, { IConfig } from 'config';
+import { Request, Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import shortid from 'shortid';
+
+import logger from '../logger';
 import BadRequestError from '../models/errors/badRequest.error.model';
 import { IUrl } from '../models/url.model';
 // import DatabaseError from "../models/errors/database.error.model";
-import logger from '../logger';
 import UrlRepository from '../repositories/url.repositorie';
 
 export function generateShortid() {

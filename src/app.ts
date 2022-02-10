@@ -1,6 +1,7 @@
 import config from 'config';
-import SetupServer from './server';
+
 import logger from './logger';
+import SetupServer from './server';
 
 (async (): Promise<void> => {
   try {

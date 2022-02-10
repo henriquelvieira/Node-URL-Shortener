@@ -1,6 +1,7 @@
-import { connect as mongooseConnect, connection } from 'mongoose';
 import config, { IConfig } from 'config';
 import * as dotenv from 'dotenv';
+import { connect as mongooseConnect, connection } from 'mongoose';
+
 import logger from '../logger';
 dotenv.config();
 
