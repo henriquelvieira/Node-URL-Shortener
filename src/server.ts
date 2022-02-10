@@ -11,7 +11,7 @@ import Configs from './util/configs';
 class SetupServer {
   app: express.Express;
   db = new MongoConnection();
-  readonly configs = Configs.getConfigs('App');
+  readonly configs = Configs.get('App');
 
   constructor(private port = 3333) {
     this.app = express();
