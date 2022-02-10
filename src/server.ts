@@ -1,4 +1,3 @@
-import config, { IConfig } from 'config';
 import cors from 'cors';
 import express, { Request, Response } from 'express';
 import expressPino from 'express-pino-logger';
@@ -7,27 +6,28 @@ import MongoConnection from './database/MongoConnection';
 import logger from './logger';
 import errorHandlerMiddleware from './middlewares/error-handler.middleware';
 import shortenerRoute from './routes/shortener.route';
+import Configs from './util/configs';
 
 class SetupServer {
   app: express.Express;
   db = new MongoConnection();
+  readonly configs = Configs.getConfigs('App');
 
   constructor(private port = 3333) {
     this.app = express();
   }
 
   private setupExpress(): void {
-    const configs: IConfig = config.get('App');
-
     this.app.use(express.json()); //Middleware p/ lidar c/ o JSON no Content-Type
     this.app.use(express.urlencoded({ extended: true })); //Middleware p/ realizar o parsing do conteúdo das requisições
 
-    const enableLogReqs = configs.get('logger.enabled_log_reqs') as boolean;
+    const enableLogReqs: boolean = this.configs.get('logger.enabledLogReqs');
+
     if (enableLogReqs) {
       this.app.use(expressPino({ logger }));
     }
 
-    this.app.use(cors({ origin: configs.get('cors.origin') })); //Permitir CORS
+    this.app.use(cors({ origin: this.configs.get('cors.origin') })); //Permitir CORS
   }
 
   private setupControllers(): void {
@@ -39,10 +39,9 @@ class SetupServer {
   }
 
   private async setupDatabase(): Promise<void> {
-    const configs: IConfig = config.get('App');
-    const connect = configs.get('database.connect') as boolean;
+    const connect = this.configs.get('database.connect') as boolean;
     if (connect) {
-      this.db.connect(); //TO DO: DESCOMENTAR
+      this.db.connect();
     }
   }
 

@@ -1,4 +1,3 @@
-import config, { IConfig } from 'config';
 import { Request, Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import shortid from 'shortid';
@@ -8,6 +7,7 @@ import BadRequestError from '../models/errors/badRequest.error.model';
 import { IUrl } from '../models/url.model';
 // import DatabaseError from "../models/errors/database.error.model";
 import UrlRepository from '../repositories/url.repositorie';
+import Configs from '../util/configs';
 
 export function generateShortid() {
   try {
@@ -25,7 +25,7 @@ export function formatURL(urlID: string): string {
   }
 
   try {
-    const configs: IConfig = config.get('App');
+    const configs = Configs.get('App');
 
     const urlServer = ((configs.get('url_api') as string) +
       configs.get('port')) as string;

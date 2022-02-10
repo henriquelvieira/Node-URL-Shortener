@@ -1,13 +1,13 @@
-import config, { IConfig } from 'config';
 import * as dotenv from 'dotenv';
 import { connect as mongooseConnect, connection } from 'mongoose';
 
 import logger from '../logger';
+import Configs from '../util/configs';
 dotenv.config();
 
 class MongoConnection {
   private getStringConnection(): string {
-    const configs: IConfig = config.get('App.envs.MONGODB');
+    const configs = Configs.get('App.envs.MONGODB');
 
     const connectionString = process.env[
       configs.get('connectionString') as string

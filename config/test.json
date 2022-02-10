@@ -1,17 +1,23 @@
 {
-  "App": {
-    "url_api": "http://localhost:",
-    "port": 4002,
-    "cors": {
-      "origin": "*"
-    },
-    "database": {
-      "connect": true
-    },
-    "logger": {
-      "enabled": true,
-      "level": "info",
-      "enabled_log_reqs": true
+    "App": {
+      "url_api": "http://localhost:",
+      "port": 4002,
+      "cors": {
+        "origin": "*"
+      },
+      "database": {
+        "connect": false
+      },
+      "logger": {
+        "enabled": true,
+        "level": "info",
+        "enabledLogReqs": true
+      },
+      "envs": {
+        "MONGODB": {
+          "connectionString": "MONGODB_CONNECTIONSTRING"
+        }
+      }
     }
   }
-}
+  
