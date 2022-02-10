@@ -8,21 +8,19 @@ import MongoConnection from './database/MongoConnection';
 import errorHandlerMiddleware from './middlewares/error-handler.middleware';
 
 class SetupServer {
-  
   app: express.Express;
   db = new MongoConnection();
-  
+
   constructor(private port = 3333) {
     this.app = express();
   }
-  
-  private setupExpress(): void {
 
+  private setupExpress(): void {
     const configs: IConfig = config.get('App');
 
     this.app.use(express.json()); //Middleware p/ lidar c/ o JSON no Content-Type
     this.app.use(express.urlencoded({ extended: true })); //Middleware p/ realizar o parsing do conteúdo das requisições
-    
+
     const enableLogReqs = configs.get('logger.enabled_log_reqs') as boolean;
     if (enableLogReqs) {
       this.app.use(expressPino({ logger }));
@@ -30,13 +28,13 @@ class SetupServer {
 
     this.app.use(cors({ origin: configs.get('cors.origin') })); //Permitir CORS
   }
-  
+
   private setupControllers(): void {
-    this.app.use('/', shortenerRoute); 
+    this.app.use('/', shortenerRoute);
   }
 
   private setupErrorHandlers(): void {
-    this.app.use(errorHandlerMiddleware)
+    this.app.use(errorHandlerMiddleware);
   }
 
   private async setupDatabase(): Promise<void> {
@@ -46,7 +44,7 @@ class SetupServer {
       this.db.connect(); //TO DO: DESCOMENTAR
     }
   }
-  
+
   public async init(): Promise<void> {
     this.setupExpress();
     this.setupControllers();
@@ -56,9 +54,8 @@ class SetupServer {
     this.setupErrorHandlers();
 
     this.app.use('/', (req: Request, res: Response) => {
-        res.json({ message: 'ok' });
-    });    
-
+      res.json({ message: 'ok' });
+    });
   }
 
   public start(): void {
@@ -73,8 +70,7 @@ class SetupServer {
 
   public getApp(): express.Express {
     return this.app;
-  }  
-
+  }
 }
 
-export default SetupServer; 
+export default SetupServer;

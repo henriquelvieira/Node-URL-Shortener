@@ -1,39 +1,40 @@
-import { formatURL, generateShortid } from "../controllers/shortener.controller";
-import { IUrl } from "../models/url.model";
-describe("ShortenerController", () => {
+import {
+  formatURL,
+  generateShortid,
+} from '../controllers/shortener.controller';
+import { IUrl } from '../models/url.model';
 
-    it("(create) - Should be able shorter a URL", async () => {
-        const url: IUrl = {original: "www.google.com"};
+describe('ShortenerController', () => {
+  it('(create) - Should be able shorter a URL', async () => {
+    const url: IUrl = { original: 'www.google.com' };
 
-        const urlID = generateShortid();
+    const urlID = generateShortid();
 
-        const urlShortened = formatURL(urlID);    
-        
-        const response = {original: url.original,
-                          shortened: urlID,
-                          urlShortened: urlShortened
-                         };                   
+    const urlShortened = formatURL(urlID);
 
-        expect(url).toHaveProperty('original');
-        expect(urlID.length).toBeGreaterThan(0);
+    const response = {
+      original: url.original,
+      shortened: urlID,
+      urlShortened: urlShortened,
+    };
 
-        expect(response).toHaveProperty('original');
-        expect(response).toHaveProperty('shortened');        
-        expect(response).toHaveProperty('urlShortened');
-    });
+    expect(url).toHaveProperty('original');
+    expect(urlID.length).toBeGreaterThan(0);
 
-    it("(redirect) - Should be able redirect to original URL", async () => {
-        const shortURL = "http://localhost:4001/vxZ3qSsCt";
+    expect(response).toHaveProperty('original');
+    expect(response).toHaveProperty('shortened');
+    expect(response).toHaveProperty('urlShortened');
+  });
 
-        const urlOriginal = "http://www.dba-oracle.com/t_calling_oracle_function.htm";
+  it('(redirect) - Should be able redirect to original URL', async () => {
+    const shortURL = 'http://localhost:4001/vxZ3qSsCt';
 
-        const response: IUrl = {original: urlOriginal,
-            urlShortened: shortURL};                                
-                               
-        expect(response).toHaveProperty('original'); 
-        expect(response).toHaveProperty('urlShortened');                               
-    });
+    const urlOriginal =
+      'http://www.dba-oracle.com/t_calling_oracle_function.htm';
 
+    const response: IUrl = { original: urlOriginal, urlShortened: shortURL };
 
-}
-);
+    expect(response).toHaveProperty('original');
+    expect(response).toHaveProperty('urlShortened');
+  });
+});
