@@ -5,7 +5,6 @@ import shortid from 'shortid';
 import logger from '../logger';
 import BadRequestError from '../models/errors/badRequest.error.model';
 import { IUrl } from '../models/url.model';
-// import DatabaseError from "../models/errors/database.error.model";
 import UrlRepository from '../repositories/url.repositorie';
 import Configs from '../util/configs';
 
@@ -26,9 +25,10 @@ export function formatURL(urlID: string): string {
 
   try {
     const configs = Configs.get('App');
+    const ApiUrl = configs.get('urlApi') as string;
+    const ApiPort = configs.get('port') as string;
 
-    const urlServer = ((configs.get('url_api') as string) +
-      configs.get('port')) as string;
+    const urlServer = ApiUrl + ApiPort;
     const urlShortened = `${urlServer}/${urlID}`;
 
     return urlShortened;
@@ -44,13 +44,9 @@ export class ShortenerController {
       //Pegar o conteudo da requisição
       const urlReq: IUrl = req.body;
 
-      if (!urlReq) {
-        throw new BadRequestError('URL não informada na requisição');
-      }
-
       //Validar se a URL foi informada
-      if (!urlReq.original) {
-        throw new BadRequestError('Campo original não informado no requisição');
+      if (!urlReq || !urlReq.original) {
+        throw new BadRequestError('URL não informada na requisição');
       }
 
       //Verificar se a URL já está na base
@@ -117,7 +113,6 @@ export class ShortenerController {
 
       //Montagem do objeto que será retornado na requisição
       const response: IUrl = {
-        //...urlResponseDB,
         original: urlResponseDB.original,
         shortened: shortURL,
       };
