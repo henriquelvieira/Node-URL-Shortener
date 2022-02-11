@@ -25,11 +25,11 @@ class UrlRepository {
 
   public async findUrlOriginal(shortURL: string): Promise<IUrl> {
     try {
-      // const rows = await Url.findOne({ shortened: shortURL });
-      const rows: IUrl = {
-        original: 'http://www.dba-oracle.com/t_calling_oracle_function.htm',
-        shortened: shortURL,
-      }; //TO DO: Remover apos ajustar conexão com o banco (MOCK)
+      const rows = await Url.findOne({ shortened: shortURL });
+      //   const rows: IUrl = {
+      //     original: 'http://www.dba-oracle.com/t_calling_oracle_function.htm',
+      //     shortened: shortURL,
+      //   }; //TO DO: Remover apos ajustar conexão com o banco (MOCK)
 
       return rows || { original: '' };
     } catch (error) {

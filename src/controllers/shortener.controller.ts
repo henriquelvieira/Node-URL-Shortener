@@ -117,7 +117,8 @@ export class ShortenerController {
 
       //Montagem do objeto que será retornado na requisição
       const response: IUrl = {
-        ...urlResponseDB,
+        //...urlResponseDB,
+        original: urlResponseDB.original,
         shortened: shortURL,
       };
 
