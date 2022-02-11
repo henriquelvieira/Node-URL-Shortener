@@ -1,8 +1,8 @@
-import config from 'config';
 import express from 'express';
 import request from 'supertest';
 
 import SetupServer from '../../src/server';
+import Configs from '../../src/util/configs';
 
 //Testes Funcionais (E2E)
 describe("(/) - Shortener Route's", () => {
@@ -10,7 +10,8 @@ describe("(/) - Shortener Route's", () => {
   let urlShortened: string;
 
   beforeAll(async () => {
-    const server = new SetupServer(config.get('App.port'));
+    const configs = Configs.get('App');
+    const server = new SetupServer(configs.get('port'));
     await server.init();
     app = server.getApp();
   });

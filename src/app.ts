@@ -1,11 +1,11 @@
-import config from 'config';
-
 import logger from './logger';
 import SetupServer from './server';
+import Configs from './util/configs';
 
 (async (): Promise<void> => {
   try {
-    const server = new SetupServer(config.get('App.port'));
+    const configs = Configs.get('App');
+    const server = new SetupServer(configs.get('port'));
     await server.init();
     server.start();
   } catch (error) {
