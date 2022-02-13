@@ -5,6 +5,12 @@ import {
 import { IUrl } from '../models/url.model';
 
 describe('ShortenerController', () => {
+  it('(generateShortid) - Should be able to generate a short id', () => {
+    const urlID = generateShortid();
+
+    expect(urlID).toBeDefined();
+  });
+
   it('(create) - Should be able shorter a URL', async () => {
     const url: IUrl = { original: 'www.google.com' };
 

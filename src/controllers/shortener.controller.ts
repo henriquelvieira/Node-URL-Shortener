@@ -10,7 +10,7 @@ import Configs from '../util/configs';
 
 export function generateShortid() {
   try {
-    const urlID = shortid.generate() as string;
+    const urlID = shortid.generate();
     return urlID;
   } catch (error) {
     logger.error(`Falha ao gerar o Shortid da URL ${error}`);
