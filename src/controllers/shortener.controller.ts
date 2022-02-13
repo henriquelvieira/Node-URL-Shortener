@@ -19,11 +19,10 @@ export function generateShortid() {
 }
 
 export function formatURL(urlID: string): string {
-  if (!urlID) {
-    throw new BadRequestError('Falha ao formatar a URL de retorno');
-  }
-
   try {
+    if (!urlID || urlID.length === 0) {
+      throw new BadRequestError('Falha ao formatar a URL de retorno');
+    }
     const configs = Configs.get('App');
     const ApiUrl = configs.get('urlApi') as string;
     const ApiPort = configs.get('port') as string;
@@ -34,7 +33,7 @@ export function formatURL(urlID: string): string {
     return urlShortened;
   } catch (error) {
     logger.error(`Falha ao formatar a URL ${error}`);
-    throw new BadRequestError('Falha ao formatar a URL de retorno', error);
+    throw new BadRequestError('Falha ao formatar a URL de retorno');
   }
 }
 

@@ -2,6 +2,7 @@ import {
   formatURL,
   generateShortid,
 } from '../controllers/shortener.controller';
+import BadRequestError from '../models/errors/badRequest.error.model';
 import { IUrl } from '../models/url.model';
 
 describe('ShortenerController', () => {
@@ -9,6 +10,25 @@ describe('ShortenerController', () => {
     const urlID = generateShortid();
 
     expect(urlID).toBeDefined();
+  });
+
+  it('(formatURL) - Should be able to format a url', () => {
+    const urlID = generateShortid();
+    const urlShortened = formatURL(urlID);
+
+    expect(urlShortened).toBeDefined();
+  });
+
+  it('(formatURL) - Should not be able to format a url', async () => {
+    try {
+      formatURL('');
+    } catch (error) {
+      expect(error).toBeInstanceOf(BadRequestError);
+      expect(error).toHaveProperty(
+        'message',
+        'Falha ao formatar a URL de retorno'
+      );
+    }
   });
 
   it('(create) - Should be able shorter a URL', async () => {
