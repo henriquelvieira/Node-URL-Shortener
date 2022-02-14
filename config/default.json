@@ -6,7 +6,7 @@
       "origin": "*"
     },
     "database": {
-      "connect": true
+      "connect": false
     },
     "logger": {
       "enabled": true,

@@ -9,13 +9,8 @@ import UrlRepository from '../repositories/url.repositorie';
 import Configs from '../util/configs';
 
 export function generateShortid() {
-  try {
-    const urlID = shortid.generate();
-    return urlID;
-  } catch (error) {
-    logger.error(`Falha ao gerar o Shortid da URL ${error}`);
-    throw new BadRequestError('Falha ao gerar a Shortid', error);
-  }
+  const urlID = shortid.generate();
+  return urlID;
 }
 
 export function formatURL(urlID: string): string {
@@ -98,7 +93,7 @@ export class ShortenerController {
     try {
       const shortURL = req.params.shortURL;
 
-      if (!shortURL) {
+      if (!shortURL || shortURL.length === 0) {
         throw new BadRequestError('Short URL não informada na requisição');
       }
 
