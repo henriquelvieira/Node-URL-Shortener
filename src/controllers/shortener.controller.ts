@@ -101,7 +101,7 @@ export class ShortenerController {
       const respository = new UrlRepository();
       const urlResponseDB: IUrl = await respository.findUrlOriginal(shortURL);
 
-      if (!urlResponseDB) {
+      if (!urlResponseDB || !urlResponseDB.shortened) {
         throw new BadRequestError('URL não encontrada na base de dados!'); //TO DO: DESCOMENTAR
       }
 

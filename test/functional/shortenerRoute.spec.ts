@@ -18,7 +18,7 @@ describe("(/) - Shortener Route's", () => {
 
   it('(POST /) - Should be able shorter a URL', async () => {
     const requestBody = {
-      original: 'http://www.dba-oracle.com/t_calling_oracle_function.htm',
+      original: 'http://www.dba-oracle.com/t_calling_oracle_function.htm2',
     };
 
     const response = await request(app)

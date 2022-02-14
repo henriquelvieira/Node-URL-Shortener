@@ -2,18 +2,54 @@ import { Request, Response, NextFunction } from 'express';
 
 import {
   formatURL,
-  generateShortid,
   ShortenerController,
 } from '../controllers/shortener.controller';
 import BadRequestError from '../models/errors/badRequest.error.model';
-import { IUrl } from '../models/url.model';
+
+// export const interceptor = {
+//   mockRequest: () => {
+//     const req: any = {};
+//     req.body = jest.fn().mockReturnValue(req);
+//     req.params = jest.fn().mockReturnValue(req);
+//     req.app = jest.fn().mockReturnValue(req);
+//     req.app.get = jest.fn().mockReturnValue(req);
+//     return req;
+//   },
+//   mockResponse: () => {
+//     const res: any = {};
+//     res.send = jest.fn().mockReturnValue(res);
+//     res.status = jest.fn().mockReturnValue(res);
+//     res.json = jest.fn().mockReturnValue(res);
+//     res.locals = jest.fn().mockReturnValue(res);
+//     return res;
+//   },
+//   mockNext: () => jest.fn(),
+// };
+
+// const mockResponse = () => {
+//   const res: any = {};
+//   res.status = jest.fn().mockReturnValue(res);
+//   res.json = jest.fn().mockReturnValue(res);
+//   return res;
+// };
+// const response: Response = mockResponse();
 
 describe('ShortenerController', () => {
-  it('(generateShortid) - Should be able to generate a short id', () => {
-    const urlID = generateShortid();
+  const shortenerController = new ShortenerController();
 
-    expect(urlID).toBeDefined();
-  });
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const mockResponse: any = {
+    status: jest.fn().mockReturnThis(),
+    send: jest.fn(),
+  };
+
+  const mockRequest = {
+    body: {
+      original: '',
+    },
+  } as Request;
+
+  const mockNext: NextFunction = jest.fn();
 
   it('(formatURL) - Should not be able to format a url', async () => {
     try {
@@ -28,20 +64,6 @@ describe('ShortenerController', () => {
   });
 
   it('(ShortenerController.create) - Should be generate a new Short URL', async () => {
-    const shortenerController = new ShortenerController();
-    const mockRequest = {
-      body: {
-        original: '',
-      },
-    } as Request;
-
-    const mockResponse: any = {
-      status: jest.fn().mockReturnThis(),
-      send: jest.fn(),
-    };
-
-    const mockNext: NextFunction = jest.fn();
-
     mockRequest.body.original = 'http://teste.com';
 
     await shortenerController.create(
@@ -52,61 +74,37 @@ describe('ShortenerController', () => {
     expect(mockResponse.status).toBeCalledWith(200);
   });
 
-  //   it('(ShortenerController.redirect) - Should not be redirect the user for a inexistent shortener URL', async () => {
-  //     const shortenerController = new ShortenerController();
-
-  //     const mockRequest = {
-  //       params: {
-  //         shortURL: '',
-  //       },
-  //     } as Request<{ shortURL: string }>;
-
-  //     const mockResponse: any = {
-  //       status: jest.fn().mockReturnThis(),
-  //       send: jest.fn(),
-  //     };
-
-  //     const mockNext: NextFunction = jest.fn();
-
-  //     await shortenerController.redirect(
-  //       mockRequest,
-  //       mockResponse as Response,
-  //       mockNext
-  //     );
-
-  //     expect(mockResponse.status).toBeCalledWith(400);
-  //   });
-
-  it('(create) - Should be able shorter a URL', async () => {
-    const url: IUrl = { original: 'www.google.com' };
-
-    const urlID = generateShortid();
-
-    const urlShortened = formatURL(urlID);
-
-    const response = {
-      original: url.original,
-      shortened: urlID,
-      urlShortened: urlShortened,
-    };
-
-    expect(url).toHaveProperty('original');
-    expect(urlID.length).toBeGreaterThan(0);
-
-    expect(response).toHaveProperty('original');
-    expect(response).toHaveProperty('shortened');
-    expect(response).toHaveProperty('urlShortened');
-  });
-
-  it('(redirect) - Should be able redirect to original URL', async () => {
-    const shortURL = 'http://localhost:4001/vxZ3qSsCt';
-
-    const urlOriginal =
+  it('(ShortenerController.create) - Should be retrieve an already shortened URL', async () => {
+    mockRequest.body.original =
       'http://www.dba-oracle.com/t_calling_oracle_function.htm';
 
-    const response: IUrl = { original: urlOriginal, urlShortened: shortURL };
+    await shortenerController.create(
+      mockRequest,
+      mockResponse as Response,
+      mockNext
+    );
+    expect(mockResponse.status).toBeCalledWith(200);
+  });
 
-    expect(response).toHaveProperty('original');
-    expect(response).toHaveProperty('urlShortened');
+  it('(ShortenerController.redirect) - Should not redirect the user without a parameter', async () => {
+    const mockRequest = {
+      params: { shortURL: '' },
+    } as Request<{ shortURL: string }>;
+
+    await shortenerController.redirect(mockRequest, mockResponse, mockNext);
+
+    expect(mockNext).toBeCalled();
+    expect(mockResponse.status).not.toBeCalled();
+  });
+
+  it('(ShortenerController.redirect) - Should not be redirect the user for a inexistent shortener URL', async () => {
+    const mockRequest = {
+      params: { shortURL: 'teste' },
+    } as Request<{ shortURL: string }>;
+
+    await shortenerController.redirect(mockRequest, mockResponse, mockNext);
+
+    expect(mockNext).toBeCalled();
+    expect(mockResponse.status).not.toBeCalled();
   });
 });
