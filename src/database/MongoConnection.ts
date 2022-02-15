@@ -34,7 +34,7 @@ class MongoConnection {
   }
 
   public async close(): Promise<void> {
-    connection.close();
+    await connection.close();
   }
 }
 

@@ -21,7 +21,8 @@ class SetupServer {
     this.app.use(express.json()); //Middleware p/ lidar c/ o JSON no Content-Type
     this.app.use(express.urlencoded({ extended: true })); //Middleware p/ realizar o parsing do conteúdo das requisições
 
-    const enableLogReqs: boolean = this.configs.get('logger.enabledLogReqs');
+    const enableLogReqs: boolean =
+      this.configs.get('logger.enabledLogReqs') || true;
 
     if (enableLogReqs) {
       this.app.use(expressPino({ logger }));
@@ -39,7 +40,7 @@ class SetupServer {
   }
 
   private async setupDatabase(): Promise<void> {
-    const connect = this.configs.get('database.connect') as boolean;
+    const connect: boolean = this.configs.get('database.connect') || true;
     if (connect) {
       this.db.connect();
     }
@@ -58,14 +59,15 @@ class SetupServer {
     });
   }
 
-  public start(): void {
+  public start(): boolean {
     this.app.listen(this.port, () => {
-      logger.info(`Server is running on port  ${this.port}`);
+      logger.info(`Server is running on port ${this.port}`);
     });
+    return true;
   }
 
-  public close(): void {
-    this.db.close();
+  public async close(): Promise<void> {
+    await this.db.close();
   }
 
   public getApp(): express.Express {
