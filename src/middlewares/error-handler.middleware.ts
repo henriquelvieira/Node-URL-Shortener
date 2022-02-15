@@ -8,8 +8,8 @@ import ForbiddenError from '../models/errors/forbidden.error.model';
 
 function errorHandlerMiddleware(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  error: any,
-  req: Request,
+  error: DatabaseError | ForbiddenError | BadRequestError | Error,
+  _req: Request,
   res: Response,
   _next: NextFunction
 ) {
