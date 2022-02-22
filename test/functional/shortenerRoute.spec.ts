@@ -3,6 +3,7 @@ import request from 'supertest';
 
 import SetupServer from '../../src/server';
 import Configs from '../../src/util/configs';
+import Env from '../../src/util/env';
 
 //Testes Funcionais (E2E)
 describe("(/) - Shortener Route's", () => {
@@ -11,7 +12,8 @@ describe("(/) - Shortener Route's", () => {
 
   beforeAll(async () => {
     const configs = Configs.get('App');
-    const server = new SetupServer(configs.get('port'));
+    const port = Number(Env.get(configs.get('envs.APP.Port')));
+    const server = new SetupServer(port);
     await server.init();
     app = server.getApp();
   });
