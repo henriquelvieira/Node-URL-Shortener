@@ -2,3 +2,6 @@ node_modules
 Requests
 .github
 coverage
+test
+dist
+.git
