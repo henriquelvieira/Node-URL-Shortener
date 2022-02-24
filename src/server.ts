@@ -40,9 +40,9 @@ class SetupServer {
   }
 
   private async setupDatabase(): Promise<void> {
-    const connect: boolean = this.configs.get('database.connect') || true;
+    const connect: boolean = this.configs.get('database.connect');
     if (connect) {
-      this.db.connect();
+      await this.db.connect();
     }
   }
 

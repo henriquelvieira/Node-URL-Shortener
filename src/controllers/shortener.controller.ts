@@ -7,6 +7,7 @@ import BadRequestError from '../models/errors/badRequest.error.model';
 import { IUrl } from '../models/url.model';
 import UrlRepository from '../repositories/url.repositorie';
 import Configs from '../util/configs';
+import Env from '../util/env';
 
 export function generateShortid() {
   const urlID = shortid.generate();
@@ -20,7 +21,7 @@ export function formatURL(urlID: string): string {
     }
     const configs = Configs.get('App');
     const ApiUrl = configs.get('urlApi') as string;
-    const ApiPort = configs.get('port') as string;
+    const ApiPort = Number(Env.get(configs.get('envs.APP.Port')));
 
     const urlServer = ApiUrl + ApiPort;
     const urlShortened = `${urlServer}/${urlID}`;

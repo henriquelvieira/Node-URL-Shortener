@@ -6,6 +6,7 @@ import DatabaseError from '../models/errors/database.error.model';
 import ForbiddenError from '../models/errors/forbidden.error.model';
 
 describe('errorHandlerMiddleware', () => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const mockResponse: any = {
     status: jest.fn().mockReturnThis(),
     send: jest.fn(),
