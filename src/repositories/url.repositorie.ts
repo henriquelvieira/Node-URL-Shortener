@@ -19,7 +19,7 @@ const mockDb = [
 class UrlRepository {
   public async findUrlShortened(urlData: IUrl): Promise<IUrl | never> {
     try {
-      // const rows = await Url.findOne({ original: urlData.original });//TODO: DESCOMENTAR
+      //   const rows = await Url.findOne({ original: urlData.original }); //TODO: DESCOMENTAR
 
       //MOCK (INI)
       const returnDB = mockDb.find(

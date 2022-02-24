@@ -9,12 +9,13 @@ import Env from '../../src/util/env';
 describe("(/) - Shortener Route's", () => {
   let app: express.Express;
   let urlShortened: string;
+  let server: SetupServer;
 
   beforeAll(async () => {
     const configs = Configs.get('App');
     const port = Number(Env.get(configs.get('envs.APP.Port')));
-    const server = new SetupServer(port);
-    await server.init();
+    server = new SetupServer(port);
+    server.init();
     app = server.getApp();
   });
 
@@ -85,5 +86,9 @@ describe("(/) - Shortener Route's", () => {
 
     expect(response.body).not.toHaveProperty('original');
     expect(response.body).not.toHaveProperty('shortened');
+  });
+
+  afterAll(async () => {
+    server.close();
   });
 });

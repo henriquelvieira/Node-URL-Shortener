@@ -67,7 +67,7 @@ class SetupServer {
   }
 
   public async close(): Promise<void> {
-    await this.db.close();
+    this.db.close();
   }
 
   public getApp(): express.Express {
