@@ -1,7 +1,7 @@
-node_modules
-Requests
-.github
-coverage
-test
-dist
-.git
+**/node_modules/
+**/Requests
+**/sql
+**/.git
+**/.github
+**/coverage
+**/dist
