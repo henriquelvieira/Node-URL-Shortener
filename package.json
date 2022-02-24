@@ -14,7 +14,8 @@
     "node",
     "nodejs",
     "typescript",
-    "api"
+    "api",
+    "MongoDB"
   ],
   "engines": {
     "node": "16"

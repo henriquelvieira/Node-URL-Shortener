@@ -40,4 +40,4 @@ services:
       - backend
 
 volumes:
-    dbdata-volume:      
+  dbdata-volume:      
