@@ -13,7 +13,10 @@ const mockDb = [
     original: 'http://www.dba-oracle.com/t_calling_oracle_function.htm',
     shortened: '123abc',
   },
-  { original: 'https://google.com', shortened: '456abc' },
+  {
+    original: 'https://google.com',
+    shortened: '456abc',
+  },
 ];
 
 class UrlRepository {
