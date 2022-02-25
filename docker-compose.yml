@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.8'
 
 services:
   app:
@@ -21,23 +21,59 @@ services:
       - 9228:9228
     networks:
       - backend
+      - nmb
+
+  mongo-express:
+    image: mongo-express:latest
+    ports:
+      - ${MONGO_EXPRESS_PORT}:${MONGO_EXPRESS_PORT}
+    depends_on:
+      - mongodb
+    links:
+      - mongodb
+    env_file:
+      - .env      
+    environment:
+      ME_CONFIG_BASICAUTH_USERNAME: ${DB_USERNAME}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${DB_PASSWORD}
+      ME_CONFIG_MONGODB_PORT: ${DB_PORT}
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${DB_USERNAME}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${DB_PASSWORD}
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: 'true'
+      ME_CONFIG_MONGODB_SERVER: mongodb
+      ME_CONFIG_MONGODB_AUTH_DATABASE: admin
+      ME_CONFIG_MONGODB_AUTH_USERNAME: ${DB_USERNAME}
+      ME_CONFIG_MONGODB_AUTH_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - backend
+      - nmb
 
   mongodb:
     image: mongo:latest
     container_name: mongodb
     restart: always
     env_file:
-      - .env
+      - .env     
     ports:
-      - '${DB_PORT}:${DB_PORT}'
+      - ${DB_PORT}:${DB_PORT}
     volumes:
       - dbdata-volume:/data/db
     environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USERNAME}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
       MONGO_INITDB_USERNAME: ${DB_USERNAME}
       MONGO_INITDB_PASSWORD: ${DB_PASSWORD}
       MONGO_INITDB_DATABASE: ${DB_DATABASE}
     networks:
       - backend
+      - nmb
 
 volumes:
   dbdata-volume:      
+
+networks:
+  backend:
+    name: nmb
+    driver: bridge
+  nmb:
+    external: true  
