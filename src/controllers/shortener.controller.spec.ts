@@ -1,10 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 
-import {
-  formatURL,
-  ShortenerController,
-} from '../controllers/shortener.controller';
 import BadRequestError from '../models/errors/badRequest.error.model';
+import { formatURL, ShortenerController } from './shortener.controller';
 
 describe('ShortenerController', () => {
   const shortenerController = new ShortenerController();

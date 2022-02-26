@@ -2,11 +2,13 @@ import { Request, Response, NextFunction } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import shortid from 'shortid';
 
+import StaticStringKeys from '../common/constants';
 import logger from '../logger';
 import BadRequestError from '../models/errors/badRequest.error.model';
 import { IUrl } from '../models/url.model';
 import UrlRepository from '../repositories/url.repositorie';
 import Configs from '../util/configs';
+import Env from '../util/env';
 
 export function generateShortid() {
   const urlID = shortid.generate();
@@ -16,19 +18,19 @@ export function generateShortid() {
 export function formatURL(urlID: string): string {
   try {
     if (!urlID || urlID.length === 0) {
-      throw new BadRequestError('Falha ao formatar a URL de retorno');
+      throw new BadRequestError(StaticStringKeys.FAIL_FORMAT_URL);
     }
     const configs = Configs.get('App');
     const ApiUrl = configs.get('urlApi') as string;
-    const ApiPort = configs.get('port') as string;
+    const ApiPort = Number(Env.get(configs.get('envs.APP.Port')));
 
     const urlServer = ApiUrl + ApiPort;
     const urlShortened = `${urlServer}/${urlID}`;
 
     return urlShortened;
   } catch (error) {
-    logger.error(`Falha ao formatar a URL ${error}`);
-    throw new BadRequestError('Falha ao formatar a URL de retorno');
+    logger.error(`${StaticStringKeys.FAIL_FORMAT_URL} ${error}`);
+    throw new BadRequestError(StaticStringKeys.FAIL_FORMAT_URL);
   }
 }
 
@@ -40,7 +42,7 @@ export class ShortenerController {
 
       //Validar se a URL foi informada
       if (!urlReq || !urlReq.original) {
-        throw new BadRequestError('URL não informada na requisição');
+        throw new BadRequestError(StaticStringKeys.UNKNOWN_URL);
       }
 
       //Verificar se a URL já está na base
@@ -94,7 +96,7 @@ export class ShortenerController {
       const shortURL = req.params.shortURL;
 
       if (!shortURL || shortURL.length === 0) {
-        throw new BadRequestError('Short URL não informada na requisição');
+        throw new BadRequestError(StaticStringKeys.UNKNOWN_URL);
       }
 
       //Busca a URL original no banco de dados
@@ -102,7 +104,7 @@ export class ShortenerController {
       const urlResponseDB: IUrl = await respository.findUrlOriginal(shortURL);
 
       if (!urlResponseDB || !urlResponseDB.shortened) {
-        throw new BadRequestError('URL não encontrada na base de dados!'); //TO DO: DESCOMENTAR
+        throw new BadRequestError(StaticStringKeys.FAIL_FIND_URL); //TO DO: DESCOMENTAR
       }
 
       //Montagem do objeto que será retornado na requisição

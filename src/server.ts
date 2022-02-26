@@ -40,9 +40,9 @@ class SetupServer {
   }
 
   private async setupDatabase(): Promise<void> {
-    const connect: boolean = this.configs.get('database.connect') || true;
+    const connect: boolean = this.configs.get('database.connect');
     if (connect) {
-      this.db.connect();
+      await this.db.connect();
     }
   }
 
@@ -67,7 +67,7 @@ class SetupServer {
   }
 
   public async close(): Promise<void> {
-    await this.db.close();
+    this.db.close();
   }
 
   public getApp(): express.Express {

@@ -14,14 +14,15 @@
     "node",
     "nodejs",
     "typescript",
-    "api"
+    "api",
+    "MongoDB"
   ],
   "engines": {
     "node": "16"
   },
   "scripts": {
     "start": "node ./",
-    "test": "jest",
+    "test": "jest --detectOpenHandles",
     "test:functional": "jest --projects ./test --runInBand",
     "test:unit": "jest --projects ./src --runInBand --coverage --verbose",
     "test:start": "yarn test && yarn start",
@@ -33,7 +34,11 @@
     "lint:fix": "eslint ./src --ext .ts --fix",
     "style:check": "prettier --check src/**/*.ts",
     "style:fix": "prettier --write src/**/*.ts",
-    "dev": "ts-node-dev --respawn --transpile-only --ignore-watch node_modules --no-notify src/app.ts | pino-pretty -c"
+    "dev": "ts-node-dev --respawn --transpile-only --ignore-watch node_modules --no-notify src/app.ts | pino-pretty -c",
+    "docker:up": "docker-compose up",
+    "docker:down": "docker-compose down",
+    "docker:remove": "docker-compose down -v"
+    
   },
   "devDependencies": {
     "@types/config": "^0.0.41",
@@ -71,7 +76,7 @@
     "http-status-codes": "^2.2.0",
     "mongoose": "^6.2.0",
     "pino": "^7.6.4",
-    "shortid": "^2.2.16",
+    "shortid": "^2.2.8",
     "ts-dotenv": "^0.8.3"
   }
 }

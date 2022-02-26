@@ -13,13 +13,16 @@ const mockDb = [
     original: 'http://www.dba-oracle.com/t_calling_oracle_function.htm',
     shortened: '123abc',
   },
-  { original: 'https://google.com', shortened: '456abc' },
+  {
+    original: 'https://google.com',
+    shortened: '456abc',
+  },
 ];
 
 class UrlRepository {
   public async findUrlShortened(urlData: IUrl): Promise<IUrl | never> {
     try {
-      // const rows = await Url.findOne({ original: urlData.original });//TODO: DESCOMENTAR
+      //   const rows = await Url.findOne({ original: urlData.original }); //TODO: DESCOMENTAR
 
       //MOCK (INI)
       const returnDB = mockDb.find(
