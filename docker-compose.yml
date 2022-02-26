@@ -1,80 +1,54 @@
 version: '3.8'
 
 services:
-  app:
-    container_name: node-url-shortener
-    build:
-      context: .
-      dockerfile: Dockerfile
-    restart: always
-    env_file:
-      - .env
-    ports:
-      - ${API_PORT}:${API_PORT}
-      - 9228:9228
-    volumes:
-      - ./:/usr/src/app
-      - /usr/src/app/node_modules
-    depends_on:
-      - mongodb
-    links:
-      - mongodb
-    networks:
-      - backend
-      - nmb
+    app:
+        container_name: node-url-shortener
+        build:
+            context: .
+            dockerfile: Dockerfile
+        restart: always
+        env_file:
+        - .env
+        ports:
+        - ${API_PORT}:${API_PORT}
+        - 9228:9228
+        volumes:
+        - ./:/usr/src/app
+        - /usr/src/app/node_modules
+        depends_on:
+        - mongo-db
+        links:
+        - mongo-db
 
-  mongo-express:
-    image: mongo-express:latest
-    container_name: mongo-ex
-    env_file:
-      - .env      
-    ports:
-      - ${MONGO_EXPRESS_PORT}:${MONGO_EXPRESS_PORT}
-    depends_on:
-      - mongodb
-    links:
-      - mongodb
-    environment:
-      ME_CONFIG_BASICAUTH_USERNAME: ${DB_USERNAME}
-      ME_CONFIG_BASICAUTH_PASSWORD: ${DB_PASSWORD}
-      ME_CONFIG_MONGODB_PORT: ${DB_PORT}
-      ME_CONFIG_MONGODB_ADMINUSERNAME: ${DB_USERNAME}
-      ME_CONFIG_MONGODB_ADMINPASSWORD: ${DB_PASSWORD}
-      ME_CONFIG_MONGODB_ENABLE_ADMIN: 'true'
-      ME_CONFIG_MONGODB_SERVER: mongodb
-      ME_CONFIG_MONGODB_AUTH_DATABASE: admin
-      ME_CONFIG_MONGODB_AUTH_USERNAME: ${DB_USERNAME}
-      ME_CONFIG_MONGODB_AUTH_PASSWORD: ${DB_PASSWORD}
-    networks:
-      - backend
-      - nmb
+    mongo-db:
+        image: mongo:latest
+        container_name: mongo-db
+        restart: always
+        env_file:
+            - .env
+        ports:
+            - ${DB_PORT}:${DB_PORT}
+        environment:
+            - MONGO_INITDB_ROOT_USERNAME=${DB_USERNAME}
+            - MONGO_INITDB_ROOT_PASSWORD=${DB_PASSWORD}
+            - MONGO_INITDB_DATABASE=${DB_DATABASE}
+        volumes:
+            - dbdata-volume:/data/db
+            - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
 
-  mongodb:
-    image: mongo:latest
-    container_name: mongodb
-    restart: always
-    env_file:
-      - .env     
-    ports:
-      - ${DB_PORT}:${DB_PORT}
-    volumes:
-      - dbdata-volume:/data/db
-    environment:
-      MONGO_INITDB_DATABASE: ${DB_DATABASE}
-      MONGO_INITDB_ROOT_USERNAME: ${DB_USERNAME}
-      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
-      MONGO_INITDB_USERNAME: ${DB_USERNAME}
-      MONGO_INITDB_PASSWORD: ${DB_PASSWORD}
-    networks:
-      - backend
-      - nmb
-
+    mongoexpress:
+        image: mongo-express:latest
+        container_name: mongo-express
+        restart: always
+        env_file:
+            - .env
+        ports:
+            - ${MONGO_EXPRESS_PORT}:${MONGO_EXPRESS_PORT}
+        links:
+            - mongo-db
+        environment:
+            - ME_CONFIG_MONGODB_URL=mongodb://${DB_USERNAME}:${DB_PASSWORD}@mongo-db:${DB_PORT}/${DB_DATABASE}
+            - ME_CONFIG_BASICAUTH_USERNAME=${DB_USERNAME}
+            - ME_CONFIG_BASICAUTH_PASSWORD=${DB_PASSWORD}
 volumes:
   dbdata-volume:     
-
-networks:
-  backend:
-    name: nmb
-    driver: bridge
-  nmb:
-    external: true  
