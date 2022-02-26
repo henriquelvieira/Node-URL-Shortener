@@ -29,12 +29,15 @@ services:
         ports:
             - ${DB_PORT}:${DB_PORT}
         environment:
-            - MONGO_INITDB_ROOT_USERNAME=${DB_USERNAME}
-            - MONGO_INITDB_ROOT_PASSWORD=${DB_PASSWORD}
+            - MONGO_INITDB_ROOT_USERNAME=${DB_ROOT_USERNAME}
+            - MONGO_INITDB_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
             - MONGO_INITDB_DATABASE=${DB_DATABASE}
+            - APP_USER=${DB_USERNAME}
+            - APP_PWD=${DB_PASSWORD}
+            - DB_NAME=${DB_DATABASE}
         volumes:
             - dbdata-volume:/data/db
-            - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js
+            - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
 
     mongoexpress:
         image: mongo-express:latest
@@ -47,7 +50,7 @@ services:
         links:
             - mongo-db
         environment:
-            - ME_CONFIG_MONGODB_URL=mongodb://${DB_USERNAME}:${DB_PASSWORD}@mongo-db:${DB_PORT}/${DB_DATABASE}
+            - ME_CONFIG_MONGODB_URL=mongodb://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST_NAME}:${DB_PORT}/${DB_DATABASE}
             - ME_CONFIG_BASICAUTH_USERNAME=${DB_USERNAME}
             - ME_CONFIG_BASICAUTH_PASSWORD=${DB_PASSWORD}
 volumes:
