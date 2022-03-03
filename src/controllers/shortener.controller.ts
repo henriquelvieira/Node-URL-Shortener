@@ -6,7 +6,7 @@ import StaticStringKeys from '../common/constants';
 import logger from '../logger';
 import BadRequestError from '../models/errors/badRequest.error.model';
 import { IUrl } from '../models/url.model';
-import UrlRepository from '../repositories/url.repositorie';
+import UrlRepository, { IUrlRepository } from '../repositories/url.repositorie';
 import Configs from '../util/configs';
 import Env from '../util/env';
 
@@ -46,7 +46,7 @@ export class ShortenerController {
       }
 
       //Verificar se a URL já está na base
-      const respository = new UrlRepository();
+      const respository: IUrlRepository = new UrlRepository();
       const urlResponseDB: IUrl = await respository.findUrlShortened(urlReq);
 
       let urlID: string;
@@ -68,8 +68,8 @@ export class ShortenerController {
 
       //Gravar a URL na base
       if (newRegister) {
-        const respository = new UrlRepository();
-        await respository.create(newRecordData);
+        const repository = new UrlRepository();
+        await repository.create(newRecordData);
       }
 
       //Montagem da URL do Server
@@ -100,8 +100,8 @@ export class ShortenerController {
       }
 
       //Busca a URL original no banco de dados
-      const respository = new UrlRepository();
-      const urlResponseDB: IUrl = await respository.findUrlOriginal(shortURL);
+      const repository: IUrlRepository = new UrlRepository();
+      const urlResponseDB: IUrl = await repository.findUrlOriginal(shortURL);
 
       if (!urlResponseDB || !urlResponseDB.shortened) {
         throw new BadRequestError(StaticStringKeys.FAIL_FIND_URL); //TO DO: DESCOMENTAR

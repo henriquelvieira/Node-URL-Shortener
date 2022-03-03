@@ -7,6 +7,13 @@ export interface IQueryParams {
   value: string;
 }
 
+// Repository interface
+export interface IUrlRepository {
+  findUrlShortened(urlData: IUrl): Promise<IUrl | never>;
+  findUrlOriginal(shortURL: string): Promise<IUrl | never>;
+  create(urlData: IUrl): Promise<void>;
+}
+
 //TODO: REMOVER, USADO COMO MOCK DA BASE
 const mockDb = [
   {
@@ -19,7 +26,7 @@ const mockDb = [
   },
 ];
 
-class UrlRepository {
+class UrlRepository implements IUrlRepository {
   public async findUrlShortened(urlData: IUrl): Promise<IUrl | never> {
     try {
       //   const rows = await Url.findOne({ original: urlData.original }); //TODO: DESCOMENTAR
