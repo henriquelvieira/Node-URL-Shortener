@@ -17,8 +17,14 @@
             "Port": "API_PORT"
         },
         "MONGODB": {
-        "connectionString": "MONGODB_CONNECTIONSTRING"
-      }
+            "connectionString": "MONGODB_CONNECTIONSTRING"
+        },
+        "REDIS": {
+            "Port": "REDIS_PORT",
+            "Host": "REDIS_HOST",
+            "Password": "REDIS_PASSWORD",
+            "Family": "REDIS_FAMILY"
+        }
     }
   }
 }
