@@ -1,4 +1,5 @@
 import { generateShortid } from '../controllers/shortener.controller';
+import { getRedis, setRedis } from '../database/RedisConnection';
 import DatabaseError from '../models/errors/database.error.model';
 import { IUrl, Url } from '../models/url.model';
 
@@ -56,7 +57,14 @@ class UrlRepository implements IUrlRepository {
 
   public async findUrlOriginal(shortURL: string): Promise<IUrl | never> {
     try {
-      //   const rows = await Url.findOne({ shortened: shortURL }); //TODO: DESCOMENTAR
+      const urlRedis = await getRedis(`url-${shortURL}`); //Verificar se a URL já está no Redis
+
+      if (urlRedis || urlRedis.length > 0) {
+        const rows = JSON.parse(urlRedis);
+      } else {
+        const rows = await Url.findOne({ shortened: shortURL }); //TODO: DESCOMENTAR
+        await setRedis(`url-${shortURL}`, JSON.stringify(rows)); //ADICIONAR A URL AO REDIS
+      }
 
       //MOCK (INI)
       const returnDB = mockDb.find(
@@ -85,6 +93,7 @@ class UrlRepository implements IUrlRepository {
     try {
       //   const newUrl = new Url(urlData);
       //   await newUrl.save();
+      //   await setRedis(`url-${urlData.shortened}`, JSON.stringify(urlData)); //ADICIONAR A URL AO REDIS
 
       //TODO: REMOVER (MOCK)
       mockDb.push({
