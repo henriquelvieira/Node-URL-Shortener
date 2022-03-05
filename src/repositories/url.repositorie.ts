@@ -19,7 +19,7 @@ class UrlRepository implements IUrlRepository {
     let rows: IUrl;
 
     try {
-      const returnDB = await Url.findOne({ original: urlData.original });
+      const returnDB = await Url.findOne({ original: urlData.original }); //Verifica se a URL já está no banco
 
       if (returnDB) {
         rows = {
@@ -44,7 +44,7 @@ class UrlRepository implements IUrlRepository {
         const rows: IUrl = JSON.parse(redisCache); //Convertendo a string para JSON
         return rows;
       } else {
-        const returnDB = await Url.findOne({ shortened: shortURL });
+        const returnDB = await Url.findOne({ shortened: shortURL }); //Verifica se a ShortURL está no banco
 
         if (returnDB) {
           const rows: IUrl = {
@@ -52,7 +52,7 @@ class UrlRepository implements IUrlRepository {
             shortened: shortURL,
           };
 
-          RedisClient.set(`url-${shortURL}`, JSON.stringify(rows), 60 * 5); //ADICIONAR A URL AO REDIS
+          RedisClient.set(`url-${shortURL}`, JSON.stringify(rows), 60 * 5); //Adicionando a URL ao Redis
 
           return rows;
         } else {
@@ -73,7 +73,7 @@ class UrlRepository implements IUrlRepository {
         `url-${urlData.shortened}`,
         JSON.stringify(urlData),
         60 * 5
-      ); //ADICIONAR A URL AO REDIS
+      ); //Adicionando a URL ao Redis
     } catch (error) {
       throw new DatabaseError('Erro ao gravar a URL no banco', error);
     }

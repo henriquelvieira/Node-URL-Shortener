@@ -62,6 +62,7 @@ class RedisClient {
 
   public close(): void {
     this.redisCliente.quit();
+    logger.info('Redis closed');
   }
 }
 
