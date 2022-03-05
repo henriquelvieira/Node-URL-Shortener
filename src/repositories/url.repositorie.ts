@@ -1,8 +1,7 @@
-import { generateShortid } from '../controllers/shortener.controller';
-import { getRedis, setRedis } from '../database/RedisConnection';
+// import { generateShortid } from '../controllers/shortener.controller';
+import RedisClient from '../database/RedisConnection';
 import DatabaseError from '../models/errors/database.error.model';
 import { IUrl, Url } from '../models/url.model';
-
 export interface IQueryParams {
   field: string;
   value: string;
@@ -15,39 +14,21 @@ export interface IUrlRepository {
   create(urlData: IUrl): Promise<void>;
 }
 
-//TODO: REMOVER, USADO COMO MOCK DA BASE
-const mockDb = [
-  {
-    original: 'http://www.dba-oracle.com/t_calling_oracle_function.htm',
-    shortened: '123abc',
-  },
-  {
-    original: 'https://google.com',
-    shortened: '456abc',
-  },
-];
-
 class UrlRepository implements IUrlRepository {
   public async findUrlShortened(urlData: IUrl): Promise<IUrl | never> {
+    let rows: IUrl;
+
     try {
-      //   const rows = await Url.findOne({ original: urlData.original }); //TODO: DESCOMENTAR
-
-      //MOCK (INI)
-      const returnDB = mockDb.find(
-        (registers) => registers.original === urlData.original
-      );
-
-      let rows: IUrl;
+      const returnDB = await Url.findOne({ original: urlData.original });
 
       if (returnDB) {
         rows = {
           original: returnDB.original,
-          shortened: generateShortid(),
-        }; //TO DO: Remover apos ajustar conexão com o banco (MOCK)
+          shortened: returnDB.shortened,
+        };
       } else {
-        rows = { original: urlData.original };
+        rows = { original: '' };
       }
-      //MOCK (FIM)
 
       return rows;
     } catch (error) {
@@ -57,33 +38,27 @@ class UrlRepository implements IUrlRepository {
 
   public async findUrlOriginal(shortURL: string): Promise<IUrl | never> {
     try {
-      const urlRedis = await getRedis(`url-${shortURL}`); //Verificar se a URL já está no Redis
+      const redisCache = await RedisClient.get(`url-${shortURL}`); //Verifica se a URL já está no Redis
 
-      if (urlRedis || urlRedis.length > 0) {
-        const rows = JSON.parse(urlRedis);
+      if (redisCache) {
+        const rows: IUrl = JSON.parse(redisCache); //Convertendo a string para JSON
+        return rows;
       } else {
-        const rows = await Url.findOne({ shortened: shortURL }); //TODO: DESCOMENTAR
-        await setRedis(`url-${shortURL}`, JSON.stringify(rows)); //ADICIONAR A URL AO REDIS
+        const returnDB = await Url.findOne({ shortened: shortURL });
+
+        if (returnDB) {
+          const rows: IUrl = {
+            original: returnDB.original,
+            shortened: shortURL,
+          };
+
+          RedisClient.set(`url-${shortURL}`, JSON.stringify(rows), 60 * 5); //ADICIONAR A URL AO REDIS
+
+          return rows;
+        } else {
+          return { original: '' };
+        }
       }
-
-      //MOCK (INI)
-      const returnDB = mockDb.find(
-        (registers) => registers.shortened === shortURL
-      );
-
-      let rows: IUrl;
-
-      if (returnDB) {
-        rows = {
-          original: returnDB.original,
-          shortened: shortURL,
-        }; //TO DO: Remover apos ajustar conexão com o banco (MOCK)
-      } else {
-        rows = { original: '' };
-      }
-      //MOCK (FIM)
-
-      return rows;
     } catch (error) {
       throw new DatabaseError('Erro ao consultar a URL', error);
     }
@@ -91,15 +66,14 @@ class UrlRepository implements IUrlRepository {
 
   public async create(urlData: IUrl): Promise<void> {
     try {
-      //   const newUrl = new Url(urlData);
-      //   await newUrl.save();
-      //   await setRedis(`url-${urlData.shortened}`, JSON.stringify(urlData)); //ADICIONAR A URL AO REDIS
+      const newUrl = new Url(urlData);
+      await newUrl.save();
 
-      //TODO: REMOVER (MOCK)
-      mockDb.push({
-        original: urlData.original,
-        shortened: urlData.shortened ?? '',
-      });
+      RedisClient.set(
+        `url-${urlData.shortened}`,
+        JSON.stringify(urlData),
+        60 * 5
+      ); //ADICIONAR A URL AO REDIS
     } catch (error) {
       throw new DatabaseError('Erro ao gravar a URL no banco', error);
     }

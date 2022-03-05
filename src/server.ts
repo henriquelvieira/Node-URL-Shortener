@@ -3,6 +3,7 @@ import express, { Request, Response } from 'express';
 import expressPino from 'express-pino-logger';
 
 import MongoConnection from './database/MongoConnection';
+import RedisClient from './database/RedisConnection';
 import logger from './logger';
 import errorHandlerMiddleware from './middlewares/error-handler.middleware';
 import shortenerRoute from './routes/shortener.route';
@@ -68,6 +69,7 @@ class SetupServer {
 
   public async close(): Promise<void> {
     this.db.close();
+    RedisClient.close();
   }
 
   public getApp(): express.Express {

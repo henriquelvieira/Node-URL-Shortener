@@ -1,4 +1,6 @@
 import Redis, { RedisOptions } from 'ioredis';
+
+import logger from '../logger';
 // import { promisify } from 'util';
 // https://github.com/RangelTadeu/cache-spotify/blob/master/src/lib/cache.js
 // https://www.youtube.com/watch?v=RTJ7u4QE9UE&list=WL&index=10
@@ -12,6 +14,7 @@ class RedisClient {
   constructor() {
     const stringConnection = this.getStringConnection();
     this.redisCliente = new Redis(stringConnection);
+    logger.info('Redis connected');
   }
 
   private getStringConnection(): RedisOptions {
@@ -29,7 +32,7 @@ class RedisClient {
       host: host,
       family: family,
       password: password,
-      //   db: 0,
+      db: 0,
       keyPrefix: keyPrefix,
     };
 
@@ -50,15 +53,20 @@ class RedisClient {
     return this.redisCliente.del(key);
   }
 
-  async delPrefix(prefix: string) {
+  public async delPrefix(prefix: string) {
     const keys = (await this.redisCliente.keys(`cache:${prefix}:*`)).map(
       (key) => key.replace('cache:', '')
     );
     return this.redisCliente.del(keys);
   }
+
+  public close(): void {
+    this.redisCliente.quit();
+  }
 }
 
 export default new RedisClient();
+
 // const redisCliente = new Redis({
 //   port: port, // Redis port
 //   host: host, // Redis host
