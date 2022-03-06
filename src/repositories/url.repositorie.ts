@@ -38,7 +38,7 @@ class UrlRepository implements IUrlRepository {
 
   public async findUrlOriginal(shortURL: string): Promise<IUrl | never> {
     try {
-      const redisCache = await RedisClient.get(`url-${shortURL}`); //Verifica se a URL já está no Redis
+      const redisCache = await RedisClient.get(`urlShortened-${shortURL}`); //Verifica se a URL já está no Redis
 
       if (redisCache) {
         const rows: IUrl = JSON.parse(redisCache); //Convertendo a string para JSON
@@ -52,7 +52,12 @@ class UrlRepository implements IUrlRepository {
             shortened: shortURL,
           };
 
-          RedisClient.set(`url-${shortURL}`, JSON.stringify(rows), 60 * 5); //Adicionando a URL ao Redis
+          const expirationTimeRedisInSeconds = 60 * 5; // 5 minutos
+          RedisClient.set(
+            `urlShortened-${shortURL}`,
+            JSON.stringify(rows),
+            expirationTimeRedisInSeconds
+          ); //Adiciona a URL ao Redis
 
           return rows;
         } else {
@@ -69,11 +74,12 @@ class UrlRepository implements IUrlRepository {
       const newUrl = new Url(urlData);
       await newUrl.save();
 
+      const expirationTimeRedisInSeconds = 60 * 5; // 5 minutos
       RedisClient.set(
-        `url-${urlData.shortened}`,
+        `urlShortened-${urlData.shortened}`,
         JSON.stringify(urlData),
-        60 * 5
-      ); //Adicionando a URL ao Redis
+        expirationTimeRedisInSeconds
+      ); //Adiciona a URL ao Redis
     } catch (error) {
       throw new DatabaseError('Erro ao gravar a URL no banco', error);
     }
