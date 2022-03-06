@@ -35,6 +35,7 @@ class MongoConnection {
 
   public async close(): Promise<void> {
     await connection.close();
+    logger.info('Database closed');
   }
 }
 

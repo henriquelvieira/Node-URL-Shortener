@@ -5,7 +5,7 @@
       "origin": "*"
     },
     "database": {
-      "connect": false
+      "connect": true
     },
     "logger": {
       "enabled": true,
@@ -14,11 +14,17 @@
     },
     "envs": {
         "APP": {
-            "Port": "API_PORT"
+            "Port": "PORT"
         },
         "MONGODB": {
-        "connectionString": "MONGODB_CONNECTIONSTRING"
-      }
+            "connectionString": "MONGODB_CONNECTIONSTRING"
+        },
+        "REDIS": {
+            "Port": "REDIS_PORT",
+            "Host": "REDIS_HOST",
+            "Password": "REDIS_PASSWORD",
+            "Family": "REDIS_FAMILY"
+        }
     }
   }
 }
