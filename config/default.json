@@ -1,6 +1,6 @@
 {
   "App": {
-    "urlApi": "http://localhost:",
+    "urlApi": "https://node-url-shortener-hlviera.herokuapp.com",
     "cors": {
       "origin": "*"
     },

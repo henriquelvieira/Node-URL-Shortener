@@ -4,9 +4,6 @@ import logger from '../logger';
 import Configs from '../util/configs';
 import Env from '../util/env';
 
-// import { promisify } from 'util';
-// https://github.com/RangelTadeu/cache-spotify/blob/master/src/lib/cache.js
-// https://www.youtube.com/watch?v=RTJ7u4QE9UE&list=WL&index=10
 class RedisClient {
   redisCliente: Redis.Redis;
 

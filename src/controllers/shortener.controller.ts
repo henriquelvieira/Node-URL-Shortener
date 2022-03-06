@@ -22,9 +22,10 @@ export function formatURL(urlID: string): string {
     }
     const configs = Configs.get('App');
     const ApiUrl = configs.get('urlApi') as string;
-    const ApiPort = Number(Env.get(configs.get('envs.APP.Port')));
+    // const ApiPort = Number(Env.get(configs.get('envs.APP.Port')));
 
-    const urlServer = ApiUrl + ApiPort;
+    // const urlServer = ApiUrl + ApiPort;
+    const urlServer = ApiUrl;
     const urlShortened = `${urlServer}/${urlID}`;
 
     return urlShortened;
@@ -114,8 +115,8 @@ export class ShortenerController {
       };
 
       //redirecionar
-      return res.status(StatusCodes.OK).send(response); //Descomentar para teste
-      // return res.redirect(response.original) //Redirecionar para a URL original
+      //   return res.status(StatusCodes.OK).send(response); //Descomentar para teste
+      return res.redirect(response.original); //Redirecionar para a URL original
     } catch (error) {
       next(error);
     }
