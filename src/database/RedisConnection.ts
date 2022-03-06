@@ -22,7 +22,7 @@ class RedisClient {
     const port = Number(Env.get(configs.get('Port')));
     const password = Env.get(configs.get('Password')) as string;
     const host = Env.get(configs.get('Host')) as string;
-    const family = Number(Env.get(configs.get('Family')));
+    const family = 4; /*Number(Env.get(configs.get('Family')));*/
     const keyPrefix = 'cache:';
     // const stringRedisConnection = `redis://:${password}@${host}:${port}/${family}`;
 

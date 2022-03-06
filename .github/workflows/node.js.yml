@@ -21,6 +21,9 @@ jobs:
     env:
         API_PORT: ${{ secrets.PORT }}
         MONGODB_CONNECTIONSTRING: ${{ secrets.MONGODB_CONNECTIONSTRING }}
+        REDIS_HOST: ${{ secrets.REDIS_HOST }}
+        REDIS_PORT: ${{ secrets.REDIS_PORT }}
+        REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
 
     steps:
     - uses: actions/checkout@v2
