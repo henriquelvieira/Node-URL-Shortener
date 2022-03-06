@@ -14,7 +14,7 @@
     },
     "envs": {
         "APP": {
-            "Port": "API_PORT"
+            "Port": "PORT"
         },
         "MONGODB": {
             "connectionString": "MONGODB_CONNECTIONSTRING"
