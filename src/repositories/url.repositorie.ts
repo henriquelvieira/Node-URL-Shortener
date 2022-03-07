@@ -12,7 +12,7 @@ export interface IUrlRepository {
   findUrlShortened(urlData: IUrl): Promise<IUrl | never>;
   findUrlOriginal(shortURL: string): Promise<IUrl | never>;
   create(urlData: IUrl): Promise<void>;
-  registerAccess(shortURL: string): void;
+  registerAccess(shortURL: string): Promise<void>;
 }
 
 class UrlRepository implements IUrlRepository {
@@ -86,10 +86,10 @@ class UrlRepository implements IUrlRepository {
     }
   }
 
-  public registerAccess(shortURL: string): void {
+  public async registerAccess(shortURL: string): Promise<void> {
     const filter = { shortened: shortURL };
     const update = { $set: { lastAccessAt: Date.now } };
-    Url.updateOne(filter, update, { upsert: true });
+    await Url.updateOne(filter, update);
   }
 }
 
