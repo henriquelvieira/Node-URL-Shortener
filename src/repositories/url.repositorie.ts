@@ -12,6 +12,7 @@ export interface IUrlRepository {
   findUrlShortened(urlData: IUrl): Promise<IUrl | never>;
   findUrlOriginal(shortURL: string): Promise<IUrl | never>;
   create(urlData: IUrl): Promise<void>;
+  registerAccess(shortURL: string): void;
 }
 
 class UrlRepository implements IUrlRepository {
@@ -83,6 +84,12 @@ class UrlRepository implements IUrlRepository {
     } catch (error) {
       throw new DatabaseError('Erro ao gravar a URL no banco', error);
     }
+  }
+
+  public registerAccess(shortURL: string): void {
+    const filter = { shortened: shortURL };
+    const update = { lastAccessAt: Date.now };
+    Url.updateOne(filter, update);
   }
 }
 

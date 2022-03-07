@@ -6,6 +6,7 @@ export interface IUrl {
   shortened?: string;
   urlShortened?: string;
   createdAt?: Date;
+  lastAccessAt?: Date;
 }
 
 const UrlSchema = new mongoose.Schema(
@@ -13,6 +14,7 @@ const UrlSchema = new mongoose.Schema(
     original: { type: String, required: true },
     shortened: { type: String, required: true },
     createdAt: { type: Date, default: Date.now, required: true },
+    lastAccessAt: { type: Date, required: false },
   },
   {
     toJSON: {

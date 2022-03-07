@@ -8,7 +8,6 @@ import BadRequestError from '../models/errors/badRequest.error.model';
 import { IUrl } from '../models/url.model';
 import UrlRepository, { IUrlRepository } from '../repositories/url.repositorie';
 import Configs from '../util/configs';
-import Env from '../util/env';
 
 export function generateShortid() {
   const urlID = shortid.generate();
@@ -22,9 +21,7 @@ export function formatURL(urlID: string): string {
     }
     const configs = Configs.get('App');
     const ApiUrl = configs.get('urlApi') as string;
-    // const ApiPort = Number(Env.get(configs.get('envs.APP.Port')));
 
-    // const urlServer = ApiUrl + ApiPort;
     const urlServer = ApiUrl;
     const urlShortened = `${urlServer}/${urlID}`;
 
@@ -105,7 +102,7 @@ export class ShortenerController {
       const urlResponseDB: IUrl = await repository.findUrlOriginal(shortURL);
 
       if (!urlResponseDB || !urlResponseDB.shortened) {
-        throw new BadRequestError(StaticStringKeys.FAIL_FIND_URL); //TO DO: DESCOMENTAR
+        throw new BadRequestError(StaticStringKeys.FAIL_FIND_URL);
       }
 
       //Montagem do objeto que será retornado na requisição
@@ -114,8 +111,10 @@ export class ShortenerController {
         shortened: shortURL,
       };
 
-      //redirecionar
+      repository.registerAccess(shortURL);
+
       //   return res.status(StatusCodes.OK).send(response); //Descomentar para teste
+      //redirecionar
       return res.redirect(response.original); //Redirecionar para a URL original
     } catch (error) {
       next(error);
