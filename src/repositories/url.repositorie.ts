@@ -88,7 +88,7 @@ class UrlRepository implements IUrlRepository {
 
   public async registerAccess(shortURL: string): Promise<void> {
     const filter = { shortened: shortURL };
-    const update = { $set: { lastAccessAt: Date.now } };
+    const update = { $set: { lastAccessAt: Date.now() } };
     await Url.updateOne(filter, update);
   }
 }
