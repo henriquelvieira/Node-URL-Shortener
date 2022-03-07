@@ -53,13 +53,10 @@ class UrlRepository implements IUrlRepository {
             shortened: shortURL,
           };
 
-          const expirationTimeRedisInSeconds = 60 * 5; // 5 minutos
-          RedisClient.set(
-            `urlShortened-${shortURL}`,
-            JSON.stringify(rows),
-            expirationTimeRedisInSeconds
-          ); //Adiciona a URL ao Redis
-
+          const redisExpirationTimeInSeconds = 60 * 5; // 5 minutos
+          const redisKey = `urlShortened-${shortURL}`;
+          const redisValue = JSON.stringify(rows);
+          RedisClient.set(redisKey, redisValue, redisExpirationTimeInSeconds); //Adiciona a URL ao Redis
           return rows;
         } else {
           return { original: '' };
@@ -75,12 +72,10 @@ class UrlRepository implements IUrlRepository {
       const newUrl = new Url(urlData);
       await newUrl.save();
 
-      const expirationTimeRedisInSeconds = 60 * 5; // 5 minutos
-      RedisClient.set(
-        `urlShortened-${urlData.shortened}`,
-        JSON.stringify(urlData),
-        expirationTimeRedisInSeconds
-      ); //Adiciona a URL ao Redis
+      const redisExpirationTimeInSeconds = 60 * 5; // 5 minutos
+      const redisKey = `urlShortened-${urlData.shortened}`;
+      const redisValue = JSON.stringify(urlData);
+      RedisClient.set(redisKey, redisValue, redisExpirationTimeInSeconds); //Adiciona a URL ao Redis
     } catch (error) {
       throw new DatabaseError('Erro ao gravar a URL no banco', error);
     }

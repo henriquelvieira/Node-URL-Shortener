@@ -111,7 +111,7 @@ export class ShortenerController {
         shortened: shortURL,
       };
 
-      repository.registerAccess(shortURL);
+      repository.registerAccess(shortURL); //Registar o acesso à URL
 
       //   return res.status(StatusCodes.OK).send(response); //Descomentar para teste
       //redirecionar

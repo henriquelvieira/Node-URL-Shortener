@@ -41,8 +41,14 @@ class RedisClient {
     return value ? JSON.parse(value) : null;
   }
 
-  public set(key: string, value: string, timeExp: number) {
-    return this.redisCliente.set(key, JSON.stringify(value), 'EX', timeExp);
+  public set(key: string, value: string, timeExp?: number) {
+    const timeExpInSeconds = timeExp || 60 * 2;
+    return this.redisCliente.set(
+      key,
+      JSON.stringify(value),
+      'EX',
+      timeExpInSeconds
+    );
   }
 
   public del(key: string) {
