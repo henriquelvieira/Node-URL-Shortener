@@ -89,7 +89,7 @@ class UrlRepository implements IUrlRepository {
   public registerAccess(shortURL: string): void {
     const filter = { shortened: shortURL };
     const update = { $set: { lastAccessAt: Date.now } };
-    Url.updateOne(filter, update);
+    Url.updateOne(filter, update, { upsert: true });
   }
 }
 
