@@ -1,6 +1,7 @@
 // import { generateShortid } from '../controllers/shortener.controller';
 import RedisClient from '../database/RedisConnection';
 import DatabaseError from '../models/errors/database.error.model';
+import { RegisterAccess } from '../models/registerAccess.model';
 import { IUrl, Url } from '../models/url.model';
 export interface IQueryParams {
   field: string;
@@ -13,6 +14,7 @@ export interface IUrlRepository {
   findUrlOriginal(shortURL: string): Promise<IUrl | never>;
   create(urlData: IUrl): Promise<void>;
   registerAccess(shortURL: string): Promise<void>;
+  incrementAccessCounter(shortURL: string): Promise<void>;
 }
 
 class UrlRepository implements IUrlRepository {
@@ -81,10 +83,24 @@ class UrlRepository implements IUrlRepository {
     }
   }
 
+  public async incrementAccessURLCounter(shortURL: string): Promise<void> {
+    try {
+      const returnDB = await Url.findOne({ shortened: shortURL });
+      if (returnDB) {
+        const urlId = returnDB.id;
+        const RegisterAccessCounter = new RegisterAccess({ url: urlId });
+        await RegisterAccessCounter.save();
+      }
+    } catch (error) {
+      throw new DatabaseError('Erro ao registrar o acesso', error);
+    }
+  }
+
   public async registerAccess(shortURL: string): Promise<void> {
     const filter = { shortened: shortURL };
     const update = { $set: { lastAccessAt: Date.now() } };
     await Url.updateOne(filter, update);
+    await this.incrementAccessURLCounter(shortURL);
   }
 }
 
