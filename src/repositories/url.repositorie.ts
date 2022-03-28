@@ -10,7 +10,7 @@ export interface IQueryParams {
 
 // Repository interface
 export interface IUrlRepository {
-  findAll(): Promise<IUrl | never>;
+  findAll(): Promise<IUrl[] | never>;
   findUrlShortened(urlData: IUrl): Promise<IUrl | never>;
   findUrlOriginal(shortURL: string): Promise<IUrl | never>;
   create(urlData: IUrl): Promise<void>;
@@ -18,10 +18,9 @@ export interface IUrlRepository {
 }
 
 class UrlRepository implements IUrlRepository {
-  public async findAll(): Promise<IUrl | never> {
+  public async findAll(): Promise<IUrl[]> {
     try {
       const returnDB = await Url.find();
-
       return returnDB;
     } catch (error) {
       throw new DatabaseError('Erro ao consultar a URL', error);

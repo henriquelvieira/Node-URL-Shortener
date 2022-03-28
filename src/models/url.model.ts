@@ -7,7 +7,17 @@ export interface IUrl {
   urlShortened?: string;
   createdAt?: Date;
   lastAccessAt?: Date;
+  counter?: number;
 }
+
+// export interface Url {
+//   _id?: string;
+//   original: string;
+//   shortened: string;
+//   createdAt?: Date;
+//   lastAccessAt?: Date;
+//   counter?: number;
+// }
 
 const UrlSchema = new mongoose.Schema(
   {
