@@ -123,7 +123,9 @@ export class ShortenerController {
       };
 
       //redirecionar
-      repository.registerAccess(shortURL); //Registar o acesso à URL
+      const agent = req.get('User-Agent');
+
+      repository.registerAccess(shortURL, agent); //Registar o acesso à URL
 
       return res.redirect(response.original); //Redirecionar para a URL original
     } catch (error) {

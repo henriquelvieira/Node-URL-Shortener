@@ -14,7 +14,7 @@ export interface IUrlRepository {
   findUrlShortened(urlData: IUrl): Promise<IUrl | never>;
   findUrlOriginal(shortURL: string): Promise<IUrl | never>;
   create(urlData: IUrl): Promise<void>;
-  registerAccess(shortURL: string): Promise<void>;
+  registerAccess(shortURL: string, agent?: string): Promise<void>;
 }
 
 class UrlRepository implements IUrlRepository {
@@ -92,12 +92,18 @@ class UrlRepository implements IUrlRepository {
     }
   }
 
-  public async incrementAccessURLCounter(shortURL: string): Promise<number> {
+  public async incrementAccessURLCounter(
+    shortURL: string,
+    agent?: string
+  ): Promise<number> {
     try {
       const returnDB = await Url.findOne({ shortened: shortURL });
       if (returnDB) {
         const urlId = returnDB.id;
-        const RegisterAccessCounter = new RegisterAccess({ url: urlId });
+        const RegisterAccessCounter = new RegisterAccess({
+          url: urlId,
+          agent: agent,
+        });
         await RegisterAccessCounter.save();
 
         const counter = await RegisterAccess.countDocuments({ url: urlId });
@@ -110,8 +116,8 @@ class UrlRepository implements IUrlRepository {
     }
   }
 
-  public async registerAccess(shortURL: string): Promise<void> {
-    const counter = await this.incrementAccessURLCounter(shortURL);
+  public async registerAccess(shortURL: string, agent?: string): Promise<void> {
+    const counter = await this.incrementAccessURLCounter(shortURL, agent);
 
     const filter = { shortened: shortURL };
     const update = { $set: { lastAccessAt: Date.now(), counter: counter } };

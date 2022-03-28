@@ -3,6 +3,7 @@ import mongoose, { Document, Model } from 'mongoose';
 export interface IRegisterAccess {
   _id?: string;
   url?: string;
+  agent?: string;
   createdAt?: Date;
 }
 
@@ -13,6 +14,7 @@ const RegisterAccessSchema = new mongoose.Schema(
       ref: 'URL',
       required: true,
     },
+    agent: { type: String, required: false },
     createdAt: { type: Date, default: Date.now, required: true },
   },
   {
