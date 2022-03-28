@@ -15,6 +15,7 @@ const UrlSchema = new mongoose.Schema(
     shortened: { type: String, required: true },
     createdAt: { type: Date, default: Date.now, required: true },
     lastAccessAt: { type: Date, required: false },
+    counter: { type: Number, required: false },
   },
   {
     toJSON: {

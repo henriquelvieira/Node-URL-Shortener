@@ -33,6 +33,17 @@ export function formatURL(urlID: string): string {
 }
 
 export class ShortenerController {
+  public async listURls(req: Request, res: Response, next: NextFunction) {
+    try {
+      const repository: IUrlRepository = new UrlRepository();
+      const responseDB = await repository.findAll();
+
+      return res.status(StatusCodes.OK).send(responseDB);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   public async create(req: Request, res: Response, next: NextFunction) {
     try {
       //Pegar o conteudo da requisição

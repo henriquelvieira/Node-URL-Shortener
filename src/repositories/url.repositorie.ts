@@ -10,14 +10,24 @@ export interface IQueryParams {
 
 // Repository interface
 export interface IUrlRepository {
+  findAll(): Promise<IUrl | never>;
   findUrlShortened(urlData: IUrl): Promise<IUrl | never>;
   findUrlOriginal(shortURL: string): Promise<IUrl | never>;
   create(urlData: IUrl): Promise<void>;
   registerAccess(shortURL: string): Promise<void>;
-  incrementAccessCounter(shortURL: string): Promise<void>;
 }
 
 class UrlRepository implements IUrlRepository {
+  public async findAll(): Promise<IUrl | never> {
+    try {
+      const returnDB = await Url.find();
+
+      return returnDB;
+    } catch (error) {
+      throw new DatabaseError('Erro ao consultar a URL', error);
+    }
+  }
+
   public async findUrlShortened(urlData: IUrl): Promise<IUrl | never> {
     let rows: IUrl;
 
@@ -83,13 +93,18 @@ class UrlRepository implements IUrlRepository {
     }
   }
 
-  public async incrementAccessURLCounter(shortURL: string): Promise<void> {
+  public async incrementAccessURLCounter(shortURL: string): Promise<number> {
     try {
       const returnDB = await Url.findOne({ shortened: shortURL });
       if (returnDB) {
         const urlId = returnDB.id;
         const RegisterAccessCounter = new RegisterAccess({ url: urlId });
         await RegisterAccessCounter.save();
+
+        const counter = await RegisterAccess.countDocuments({ url: urlId });
+        return counter;
+      } else {
+        return 0;
       }
     } catch (error) {
       throw new DatabaseError('Erro ao registrar o acesso', error);
@@ -97,10 +112,11 @@ class UrlRepository implements IUrlRepository {
   }
 
   public async registerAccess(shortURL: string): Promise<void> {
+    const counter = await this.incrementAccessURLCounter(shortURL);
+
     const filter = { shortened: shortURL };
-    const update = { $set: { lastAccessAt: Date.now() } };
+    const update = { $set: { lastAccessAt: Date.now(), counter: counter } };
     await Url.updateOne(filter, update);
-    await this.incrementAccessURLCounter(shortURL);
   }
 }
 
